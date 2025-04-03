@@ -3,7 +3,8 @@ from .models import Producto
 
 # Create your views here.
 def home(request):
-    return render(request, 'index.html')
+    productos = Producto.objects.all().order_by('-id')[:3]  # Últimos 3 productos
+    return render(request, 'index.html', {'productos': productos})
 
 def cart(request):
     return render(request, 'cart.html')
@@ -20,8 +21,8 @@ def contact(request):
 def about(request):
     return render(request, 'about.html')
 
-def services(request):
-    return render(request, 'services.html')
+def blog(request):
+    return render(request, 'blog.html')
 
 def shop(request):
     productos = Producto.objects.all()  # Obtener todos los productos

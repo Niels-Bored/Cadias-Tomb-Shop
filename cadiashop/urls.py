@@ -22,7 +22,7 @@ from shop.views import cart
 from shop.views import about
 from shop.views import checkout
 from shop.views import contact
-from shop.views import services
+from shop.views import blog
 from shop.views import shop
 from shop.views import thankyou
 
@@ -33,7 +33,7 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('checkout/', checkout, name='checkout'),
     path('contact/', contact, name='contact'),
-    path('services/', services, name='services'),
+    path('blog/', blog, name='blog'),
     path('shop/', shop, name='shop'),
     path('thankyou/', thankyou, name='thankyou'),
 ]
