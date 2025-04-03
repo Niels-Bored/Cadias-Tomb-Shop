@@ -12,8 +12,16 @@ function actualizarContadorCarrito() {
 // Ejecutar la función al cargar la página
 document.addEventListener("DOMContentLoaded", actualizarContadorCarrito);
 
+function actualizarTotales() {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let subtotal = carrito.reduce((sum, prod) => sum + (prod.precio * prod.cantidad), 0);
+    
+    document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById("total").textContent = `$${subtotal.toFixed(2)}`; // Puedes agregar impuestos si es necesario
+}
 
 document.addEventListener("DOMContentLoaded", function () {
+    actualizarTotales(); // Actualizar al cargar la página
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const tbody = document.getElementById("carrito-body");
 
@@ -47,8 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Agregar eventos a los botones de aumentar, disminuir y eliminar
     tbody.addEventListener("click", function (event) {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-
       const index = event.target.dataset.index;
       let recargar = false
       if (event.target.classList.contains("increase")) {
@@ -78,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if(recargar){
         localStorage.setItem("carrito", JSON.stringify(carrito));
         location.reload();
+        actualizarTotales(); // Actualizar al cargar la página
       }
     });
   });
