@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/tiny-slider.css' %}">
+		<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 		<title>Cadia's Tomb</title>
 	</head>
 
@@ -51,7 +52,12 @@
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 						<li><a class="nav-link" href="#"><img src="{% static 'images/user.svg' %}"></a></li>
-						<li><a class="nav-link" href="{% url 'cart' %}"><img src="{% static 'images/cart.svg' %}"></a></li>
+						<li style="position: relative;">
+							<a class="nav-link" href="{% url 'cart' %}">
+								<img src="{% static 'images/cart.svg' %}">
+								<span id="cart-count" class="cart-badge">0</span>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -205,6 +211,7 @@
 		<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 		<script src="{% static 'js/tiny-slider.js' %}"></script>
 		<script src="{% static 'js/custom.js' %}"></script>
+		<script src="{% static 'js/shop.js' %}"></script>
 	</body>
 
 </html>

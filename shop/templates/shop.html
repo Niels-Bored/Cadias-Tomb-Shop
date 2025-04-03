@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/tiny-slider.css' %}">
+		<link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 		<title>Cadia's Tomb</title>
 	</head>
 
@@ -52,7 +53,12 @@
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
 						<li><a class="nav-link" href="#"><img src="{% static 'images/user.svg' %}"></a></li>
-						<li><a class="nav-link" href="{% url 'cart' %}"><img src="{% static 'images/cart.svg' %}"></a></li>
+						<li style="position: relative;">
+							<a class="nav-link" href="{% url 'cart' %}">
+								<img src="{% static 'images/cart.svg' %}">
+								<span id="cart-count" class="cart-badge">0</span>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -226,44 +232,7 @@
 		<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 		<script src="{% static 'js/tiny-slider.js' %}"></script>
 		<script src="{% static 'js/custom.js' %}"></script>
-		<script>
-			function agregarAlCarrito(id, nombre, urlImagen, precio, marca) {
-				// Obtener el carrito actual desde localStorage (o crear uno vacío)
-				let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-	
-				// Buscar si el producto ya está en el carrito
-				let productoExistente = carrito.find(p => p.id === id);
-	
-				if (productoExistente) {
-					// Si ya está en el carrito, aumentar la cantidad
-					productoExistente.cantidad += 1;
-				} else {
-					// Si es un producto nuevo, agregarlo con cantidad 1
-					carrito.push({
-						id: id,
-						nombre: nombre,
-						urlImagen: urlImagen,
-						precio: precio,
-						marca: marca,
-						cantidad: 1
-					});
-				}
-	
-				// Guardar el carrito actualizado en localStorage
-				localStorage.setItem('carrito', JSON.stringify(carrito));
-	
-				// Mostrar SweetAlert con información del producto
-				Swal.fire({
-					title: "Producto añadido 🛒",
-					html: `<b>${nombre}</b> ha sido añadido al carrito.<br>Cantidad: ${productoExistente ? productoExistente.cantidad : 1}`,
-					imageUrl: urlImagen,
-					imageWidth: 100,
-					imageHeight: 100,
-					icon: "success",
-					confirmButtonText: "Aceptar"
-				});
-			}
-		</script>
+		<script src="{% static 'js/shop.js' %}"></script>
 	</body>
 	
 
