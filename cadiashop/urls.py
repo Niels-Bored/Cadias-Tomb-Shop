@@ -29,6 +29,8 @@ from shop.views import thankyou
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', home, name='home'),
+    path('login', home, name='login'),
+    path('signup', home, name='signup'),
     path('cart/', cart, name='cart'),
     path('about/', about, name='about'),
     path('checkout/', checkout, name='checkout'),

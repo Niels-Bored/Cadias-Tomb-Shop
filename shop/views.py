@@ -7,6 +7,12 @@ def home(request):
     productos = Producto.objects.all().order_by('-id')[:3]  # Últimos 3 productos
     return render(request, 'index.html', {'productos': productos})
 
+def login(request):
+    return render(request, 'login.html')
+
+def signup(request):
+    return render(request, 'signup.html')
+
 @csrf_exempt
 def cart(request):
     return render(request, 'cart.html')
