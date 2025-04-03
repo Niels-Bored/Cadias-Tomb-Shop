@@ -25,8 +25,10 @@ def blog(request):
     return render(request, 'blog.html')
 
 def shop(request):
-    productos = Producto.objects.all()  # Obtener todos los productos
-    return render(request, 'shop.html', {'productos': productos})
+    query = request.GET.get('q', '')  # Obtener el valor del input (o vacío si no hay)
+    productos = Producto.objects.filter(nombre__icontains=query) if query else Producto.objects.all()
+    
+    return render(request, 'shop.html', {'productos': productos, 'query': query})
 
 def thankyou(request):
     return render(request, 'thankyou.html')
