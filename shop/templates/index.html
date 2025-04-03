@@ -18,6 +18,7 @@
   <meta name="keywords" content="bootstrap, bootstrap4" />
 
 		<!-- Bootstrap CSS -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -96,12 +97,12 @@
 					{% for producto in productos %}
 					<!-- Start Column 2 -->
 					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-						<a class="product-item" href="{% url 'cart' %}">
+						<a class="product-item">
 							<img src="{{ producto.url_imagen }}" class="img-fluid product-thumbnail">
 							<h3 class="product-title">{{ producto.nombre }}</h3>
 							<strong class="product-price">${{ producto.precio }}</strong>
 
-							<span class="icon-cross">
+							<span onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.url_imagen }}', '{{ producto.precio }}', '{{ producto.marca }}')" class="icon-cross">
 								<img src="{% static 'images/cross.svg' %}" class="img-fluid">
 							</span>
 						</a>
@@ -368,8 +369,46 @@
 
 
 		<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-		<script src="{% static 'js/tiny-slider.js' %} js/tiny-slider.js"></script>
+		<script src="{% static 'js/tiny-slider.js' %}"></script>
 		<script src="{% static 'js/custom.js' %}"></script>
+		<script>
+			function agregarAlCarrito(id, nombre, urlImagen, precio, marca) {
+				// Obtener el carrito actual desde localStorage (o crear uno vacío)
+				let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+	
+				// Buscar si el producto ya está en el carrito
+				let productoExistente = carrito.find(p => p.id === id);
+	
+				if (productoExistente) {
+					// Si ya está en el carrito, aumentar la cantidad
+					productoExistente.cantidad += 1;
+				} else {
+					// Si es un producto nuevo, agregarlo con cantidad 1
+					carrito.push({
+						id: id,
+						nombre: nombre,
+						urlImagen: urlImagen,
+						precio: precio,
+						marca: marca,
+						cantidad: 1
+					});
+				}
+	
+				// Guardar el carrito actualizado en localStorage
+				localStorage.setItem('carrito', JSON.stringify(carrito));
+	
+				// Mostrar SweetAlert con información del producto
+				Swal.fire({
+					title: "Producto añadido 🛒",
+					html: `<b>${nombre}</b> ha sido añadido al carrito.<br>Cantidad: ${productoExistente ? productoExistente.cantidad : 1}`,
+					imageUrl: urlImagen,
+					imageWidth: 100,
+					imageHeight: 100,
+					icon: "success",
+					confirmButtonText: "Aceptar"
+				});
+			}
+		</script>
 	</body>
 
 </html>
