@@ -22,7 +22,8 @@ function agregarAlCarrito(id, nombre, urlImagen, precio, marca, stock) {
             urlImagen: urlImagen,
             precio: precio,
             marca: marca,
-            cantidad: 1
+            cantidad: 1,
+            stock: stock
         });
         agregado = true
     }

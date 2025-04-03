@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from .models import Producto
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def home(request):
     productos = Producto.objects.all().order_by('-id')[:3]  # Últimos 3 productos
     return render(request, 'index.html', {'productos': productos})
 
+@csrf_exempt
 def cart(request):
     return render(request, 'cart.html')
 
