@@ -19,12 +19,19 @@
 		.searchin{
 			margin-top: 20px;
 			margin-left: 5%;
-			width: 80%;
+			width: 20%;
 			border: none;
 			color: green;
-			border-bottom: 1px solid green;
+			border-bottom: 2px solid green;
 			background-color: transparent;
 			font-size: 20px;
+			outline: none;
+  			transition: all 0.3s ease-in-out;
+		}
+
+		.searchin:focus{
+			width: 80%;
+			box-shadow: 0 3px 0 green;
 		}
 		svg{
 			width: 30px;
