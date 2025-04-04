@@ -70,11 +70,11 @@ WSGI_APPLICATION = "cadiashop.wsgi.application"
 # Setup database for testing and production
 IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
-if IS_TESTING:
+if IS_TESTING or True:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'testing.sqlite3'),
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
 else:
