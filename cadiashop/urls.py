@@ -18,8 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from shop.views import home
-from shop.views import login
-from shop.views import signup
+from shop.views import inicio_sesion
+from shop.views import registro
 from shop.views import cart
 from shop.views import about
 from shop.views import checkout
@@ -31,8 +31,8 @@ from shop.views import thankyou
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', home, name='home'),
-    path('login', login, name='login'),
-    path('signup', signup, name='signup'),
+    path('login', inicio_sesion, name='login'),
+    path('signup', registro, name='signup'),
     path('cart/', cart, name='cart'),
     path('about/', about, name='about'),
     path('checkout/', checkout, name='checkout'),

@@ -18,7 +18,6 @@
   <meta name="keywords" content="bootstrap, bootstrap4" />
 
 		<!-- Bootstrap CSS -->
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'shop/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
@@ -41,11 +40,11 @@
 
 				<div class="collapse navbar-collapse" id="navbarsFurni">
 					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a class="nav-link" href="{% url 'home' %}">Home</a>
 						</li>
 						<li><a class="nav-link" href="{% url 'shop' %}">Tienda</a></li>
-						<li><a class="nav-link" href="{% url 'about' %}">Nosotros</a></li>
+						<li class="active"><a class="nav-link" href="{% url 'about' %}">Nosotros</a></li>
 						<li><a class="nav-link" href="{% url 'blog' %}">Blog</a></li>
 						<!-- <li><a class="nav-link" href="blog.html">Blog</a></li> -->
 						<li><a class="nav-link" href="{% url 'contact' %}">Contáctanos</a></li>
@@ -65,22 +64,16 @@
 				
 		</nav>
 		<!-- End Header/Navigation -->
-		{% if request.user.is_authenticated %}
-		<p>Hola, {{ request.user.username }}</p>
-		<a href="{% url 'cart' %}">Cerrar sesión</a>
-	{% else %}
-		<a href="{% url 'login' %}">Iniciar sesión</a>
-	{% endif %}
+
 		<!-- Start Hero Section -->
 			<div class="hero">
 				<div class="container">
 					<div class="row justify-content-between">
 						<div class="col-lg-5">
 							<div class="intro-excerpt">
-                                <h1>Juegos y más<span class="d-block">¡Unete al hobby!</span></h1>
-								<!-- <h1>Modern Interior <span class="d-block">Design Studio</span></h1> -->
-								<p class="mb-4">Somos tu mejor alternativa para adquirir todo lo que necesitas para adentrarte en el hobby, unete a nuestra comunidad y te enseñaremos todo lo que necesitas para pintar o jugar tus wargames favoritos.</p>
-								<p><a href="{% url 'shop' %}" class="btn btn-secondary me-2">Compra ahora</a><a href="#seccion-destino" class="btn btn-white-outline">Explora</a></p>
+								<h1>About Us</h1>
+								<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+								<p><a href="{% url 'shop' %}" class="btn btn-secondary me-2">Shop Now</a><a href="#seccion-destino" class="btn btn-white-outline">Explore</a></p>
 							</div>
 						</div>
 						<div class="col-lg-7">
@@ -93,40 +86,7 @@
 			</div>
 		<!-- End Hero Section -->
 
-		<!-- Start Product Section -->
-		<div id="seccion-destino" class="product-section">
-			<div class="container">
-				<div class="row">
-
-					<!-- Start Column 1 -->
-					<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-						<h2 class="mb-4 section-title">Revisa nuestro catalogo de productos</h2>
-						<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
-						<p><a href="{% url 'shop' %}" class="btn">Explora</a></p>
-					</div> 
-					<!-- End Column 1 -->
-					{% for producto in productos %}
-					<!-- Start Column 2 -->
-					<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-						<a class="product-item">
-							<img src="{{ producto.url_imagen }}" class="img-fluid product-thumbnail">
-							<h3 class="product-title">{{ producto.nombre }}</h3>
-							<strong class="product-price">${{ producto.precio }}</strong>
-
-							<span onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.url_imagen }}', '{{ producto.precio }}', '{{ producto.marca }}')" class="icon-cross">
-								<img src="{% static 'shop/images/cross.svg' %}" class="img-fluid">
-							</span>
-						</a>
-					</div> 
-					<!-- End Column 2 -->
-					{% empty %}
-						<p>No hay productos disponibles.</p>
-					{% endfor %}
-					
-				</div>
-			</div>
-		</div>
-		<!-- End Product Section -->
+		<div id="seccion-destino" style="margin-top: 100px;"></div>
 
 		<!-- Start Why Choose Us Section -->
 		<div class="why-choose-section">
@@ -191,88 +151,74 @@
 		</div>
 		<!-- End Why Choose Us Section -->
 
-		<!-- Start We Help Section -->
-		<div class="we-help-section">
+		<!-- Start Team Section -->
+		<div class="untree_co-section">
 			<div class="container">
-				<div class="row justify-content-between">
-					<div class="col-lg-7 mb-5 mb-lg-0">
-						<div class="imgs-grid">
-							<div class="grid grid-1"><img src="https://upload.wikimedia.org/wikipedia/commons/8/81/Wh40k_painting_miniature.jpg" alt="Untree.co"></div>
-							<div class="grid grid-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDPLHYnwUGlT25-aPncdIc0ThtLn1n_-Uu4noQAhU1o99cYfMloBDGpsKVywg54HmsCKk&usqp=CAU" alt="Untree.co"></div>
-							<div class="grid grid-3"><img src="https://platform.polygon.com/wp-content/uploads/sites/2/2025/01/B88A1262.jpg?quality=90&strip=all&crop=0%2C0%2C100%2C100&w=2400" alt="Untree.co"></div>
-						</div>
-					</div>
-					<div class="col-lg-5 ps-lg-5">
-						<h2 class="section-title mb-4">Nosotros te enseñamos lo que necesitas para entrar al hobby</h2>
-						<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
 
-						<ul class="list-unstyled custom-list my-4">
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-							<li>Donec vitae odio quis nisl dapibus malesuada</li>
-						</ul>
-						<p><a href="{% url 'about' %}" class="btn">Explora</a></p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End We Help Section -->
-		
-		<!-- Start Blog Section -->
-		<div class="blog-section">
-			<div class="container">
 				<div class="row mb-5">
-					<div class="col-md-6">
-						<h2 class="section-title">Recent Blog</h2>
-					</div>
-					<div class="col-md-6 text-start text-md-end">
-						<a href="#" class="more">View All Posts</a>
+					<div class="col-lg-5 mx-auto text-center">
+						<h2 class="section-title">Our Team</h2>
 					</div>
 				</div>
 
 				<div class="row">
 
-					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-1.jpg" alt="Image" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">First Time Home Owner Ideas</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 19, 2021</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
+					<!-- Start Column 1 -->
+					<div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+						<img src="images/person_1.jpg" class="img-fluid mb-5">
+						<h3 clas><a href="#"><span class="">Lawson</span> Arnold</a></h3>
+            <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+            <p>Separated they live in.
+            Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+            <p class="mb-0"><a href="#" class="more dark">Learn More <span class="icon-arrow_forward"></span></a></p>
+					</div> 
+					<!-- End Column 1 -->
 
-					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-2.jpg" alt="Image" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">How To Keep Your Furniture Clean</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Robert Fox</a></span> <span>on <a href="#">Dec 15, 2021</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
+					<!-- Start Column 2 -->
+					<div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+						<img src="images/person_2.jpg" class="img-fluid mb-5">
 
-					<div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-						<div class="post-entry">
-							<a href="#" class="post-thumbnail"><img src="images/post-3.jpg" alt="Image" class="img-fluid"></a>
-							<div class="post-content-entry">
-								<h3><a href="#">Small Space Furniture Apartment Ideas</a></h3>
-								<div class="meta">
-									<span>by <a href="#">Kristin Watson</a></span> <span>on <a href="#">Dec 12, 2021</a></span>
-								</div>
-							</div>
-						</div>
-					</div>
+						<h3 clas><a href="#"><span class="">Jeremy</span> Walker</a></h3>
+            <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+            <p>Separated they live in.
+            Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+            <p class="mb-0"><a href="#" class="more dark">Learn More <span class="icon-arrow_forward"></span></a></p>
+
+					</div> 
+					<!-- End Column 2 -->
+
+					<!-- Start Column 3 -->
+					<div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+						<img src="images/person_3.jpg" class="img-fluid mb-5">
+						<h3 clas><a href="#"><span class="">Patrik</span> White</a></h3>
+            <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+            <p>Separated they live in.
+            Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+            <p class="mb-0"><a href="#" class="more dark">Learn More <span class="icon-arrow_forward"></span></a></p>
+					</div> 
+					<!-- End Column 3 -->
+
+					<!-- Start Column 4 -->
+					<div class="col-12 col-md-6 col-lg-3 mb-5 mb-md-0">
+						<img src="images/person_4.jpg" class="img-fluid mb-5">
+
+						<h3 clas><a href="#"><span class="">Kathryn</span> Ryan</a></h3>
+            <span class="d-block position mb-4">CEO, Founder, Atty.</span>
+            <p>Separated they live in.
+            Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+            <p class="mb-0"><a href="#" class="more dark">Learn More <span class="icon-arrow_forward"></span></a></p>
+
+          
+					</div> 
+					<!-- End Column 4 -->
+
+					
 
 				</div>
 			</div>
 		</div>
-		<!-- End Blog Section -->	
+		<div style="margin-bottom: 50px;"></div>
+		<!-- End Team Section -->
 
 		<!-- Start Footer Section -->
 		<footer class="footer-section">
@@ -285,7 +231,7 @@
 				<!-- <div class="row">
 					<div class="col-lg-8">
 						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="{% static 'shop/images/envelope-outline.svg' %}" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
 
 							<form action="#" class="row g-3">
 								<div class="col-auto">
@@ -322,9 +268,10 @@
 						<div class="row links-wrap">
 							<div class="col-6 col-sm-6 col-md-3">
 								<ul class="list-unstyled">
-									<li><a href="{% url 'about' %}">About us</a></li>
-									<li><a href="{% url 'blog' %}">Blog</a></li>
-									<li><a href="{% url 'contact' %}">Contact us</a></li>
+									<li><a href="#">About us</a></li>
+									<li><a href="#">Services</a></li>
+									<li><a href="#">Blog</a></li>
+									<li><a href="#">Contact us</a></li>
 								</ul>
 							</div>
 
