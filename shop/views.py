@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import Producto
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
@@ -31,6 +32,7 @@ def cart(request):
 def contact(request):
     return render(request, 'shop/contact.html')
 
+@login_required
 def checkout(request):
     return render(request, 'shop/checkout.html')
 

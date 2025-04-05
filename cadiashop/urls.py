@@ -28,6 +28,13 @@ from shop.views import blog
 from shop.views import shop
 from shop.views import thankyou
 
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', home, name='home'),
@@ -40,4 +47,5 @@ urlpatterns = [
     path('blog/', blog, name='blog'),
     path('shop/', shop, name='shop'),
     path('thankyou/', thankyou, name='thankyou'),
+    path('logout/', logout_view, name='logout'),
 ]
