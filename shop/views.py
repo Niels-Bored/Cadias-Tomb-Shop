@@ -46,7 +46,7 @@ def registro(request):
     return render(request, 'shop/signup.html')
 
 def cart(request):
-    return render(request, 'shop/cart.html')
+    return render(request, 'shop/cart.html', {'user_authenticated': request.user.is_authenticated})
 
 def contact(request):
     return render(request, 'shop/contact.html')

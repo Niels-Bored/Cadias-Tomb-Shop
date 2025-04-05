@@ -215,7 +215,7 @@
         
                       <div class="row">
                         <div class="col-md-12">
-                          <a href="{% url 'checkout' %}"><button class="btn btn-black btn-lg py-3 btn-block">Proceder al Pago</button></a>
+                          <button id="btn" data-authenticated="{{ user_authenticated|yesno:"true,false" }}" class="btn btn-black btn-lg py-3 btn-block">Proceder al Pago</button>
                         </div>
                       </div>
                     </div>
@@ -337,6 +337,12 @@
 		<script src="{% static 'shop/js/tiny-slider.js' %}"></script>
 		<script src="{% static 'shop/js/custom.js' %}"></script>
 		<script src="{% static 'shop/js/cart.js' %}"></script>
+		<script>
+			document.getElementById('btn').addEventListener('click', () => {
+				const isAuthenticated = document.getElementById('btn').dataset.authenticated === 'true';
+				window.location.href = isAuthenticated ? "{% url 'checkout' %}" : "{% url 'login' %}";
+			});
+		</script>
 	</body>
 
 </html>
