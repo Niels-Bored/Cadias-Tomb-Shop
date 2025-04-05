@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import Producto
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
 
 # Create your views here.
 def home(request):
@@ -24,6 +26,23 @@ def inicio_sesion(request):
     return render(request, 'shop/login.html')
 
 def registro(request):
+    if request.method == 'POST':
+        firstname = request.POST['first_name']
+        lastname = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        if password1 != password2:
+            return render(request, 'shop/signup.html', {'error': 'Las contraseñas no coinciden'})
+
+        if User.objects.filter(username=username).exists():
+            return render(request, 'shop/signup.html', {'error': 'El usuario ya existe'})
+
+        user = User.objects.create_user(first_name=firstname, last_name=lastname, username=username, email=email, password=password1)
+        return redirect('login')  # o loguear automáticamente
+    
     return render(request, 'shop/signup.html')
 
 def cart(request):

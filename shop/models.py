@@ -1,5 +1,12 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
+""" 
+class CustomUser(AbstractUser):
+    nombre = models.CharField(max_length=100)
+    apellido_p = models.CharField(max_length=100)
+    apellido_m = models.CharField(max_length=100)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
+ """
 # Create your models here.
 class Producto(models.Model):
     MARCAS = [
