@@ -1,12 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-""" 
-class CustomUser(AbstractUser):
-    nombre = models.CharField(max_length=100)
-    apellido_p = models.CharField(max_length=100)
-    apellido_m = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=15, blank=True, null=True)
- """
+from django.contrib.auth.models import User
+
 # Create your models here.
 class Producto(models.Model):
     MARCAS = [
@@ -32,26 +26,32 @@ class Producto(models.Model):
         verbose_name = "Producto"
 
 
-class Usuario(models.Model):
-    id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)
-    apellido_p = models.CharField(max_length=100)
-    apellido_m = models.CharField(max_length=100)
-    correo = models.CharField(max_length=100)
-    contraseña = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.nombre
-    
-    class Meta:
-        verbose_name_plural = "Usuarios"
-        verbose_name = "Usuario"
-
-
-class Compra(models.Model):
+class Venta(models.Model):
     id = models.AutoField(primary_key=True)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    direccion = models.CharField(max_length=500)
     fecha_venta = models.DateField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def __str__(self):
+        return self.id
+    
+    class Meta:
+        verbose_name_plural = "Ventas"
+        verbose_name = "Venta"
+
+class Blog(models.Model):
+    id = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=100)
+    url_imagen = models.CharField(max_length=300)
+    descripcion = models.CharField(max_length=200)
+    autor = models.CharField(max_length=100)
+    fecha_publicacion = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titulo
+    
+    class Meta:
+        verbose_name_plural = "Blogs"
+        verbose_name = "Blog"

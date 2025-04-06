@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import Producto
+from .models import Blog
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 
 # Create your views here.
 def home(request):
+    blogs = Blog.objects.all().order_by('-id')[:3]  # Últimos 3 blogs
     productos = Producto.objects.all().order_by('-id')[:3]  # Últimos 3 productos
-    return render(request, 'shop/index.html', {'productos': productos})
+    return render(request, 'shop/index.html', {'productos': productos, 'blogs':blogs})
 
 def inicio_sesion(request):
     if request.method == 'POST':
@@ -62,7 +64,8 @@ def about(request):
     return render(request, 'shop/about.html')
 
 def blog(request):
-    return render(request, 'shop/blog.html')
+    blogs = Blog.objects.all().order_by('-id')[:20]  # Últimos 18 blogs
+    return render(request, 'shop/blog.html', {'blogs': blogs})
 
 def shop(request):
     query = request.GET.get('q', '')  # Obtener el valor del input (o vacío si no hay)

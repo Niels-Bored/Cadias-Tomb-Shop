@@ -8,7 +8,12 @@ class ProductosAdmin(admin.ModelAdmin):
     search_fields = ('nombre','marca')
     list_filter = ('marca',)
 
-@admin.register(models.Usuario)
-class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('nombre','apellido_p', 'apellido_m', 'correo')
-    earch_fields = ('nombre','apellido_p', 'apellido_m', 'correo')
+@admin.register(models.Venta)
+class VentasAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'usuario', 'direccion', 'fecha_venta', 'total')
+    search_fields = ('usuario',)
+
+@admin.register(models.Blog)
+class BlogsAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'descripcion', 'autor', 'fecha_publicacion')
+    search_fields = ('titulo','autor')
