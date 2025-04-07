@@ -1,21 +1,28 @@
-"""
-URL configuration for cadiashop project.
+from django.urls import path
+from shop.views import HomeView, LoginView, SignupView, CartView, CheckoutView, ContactView, AboutView, ThankYouView, BlogListView, ShopView
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
-from django.contrib import admin
+urlpatterns = [
+    path('', HomeView.as_view(), name='home'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('signup/', SignupView.as_view(), name='signup'),
+    path('cart/', CartView.as_view(), name='cart'),
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
+    path('contact/', ContactView.as_view(), name='contact'),
+    path('about/', AboutView.as_view(), name='about'),
+    path('thankyou/', ThankYouView.as_view(), name='thankyou'),
+    path('blog/', BlogListView.as_view(), name='blog'),
+    path('shop/', ShopView.as_view(), name='shop'),
+    path('logout/', logout_view, name='logout')
+]
+
+
+""" from django.contrib import admin
 from django.urls import path
 from shop.views import home
 from shop.views import inicio_sesion
@@ -49,3 +56,4 @@ urlpatterns = [
     path('thankyou/', thankyou, name='thankyou'),
     path('logout/', logout_view, name='logout'),
 ]
+ """
