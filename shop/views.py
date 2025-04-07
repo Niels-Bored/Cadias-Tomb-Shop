@@ -8,9 +8,11 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
-    blogs = Blog.objects.all().order_by('-id')[:3]  # Últimos 3 blogs
-    productos = Producto.objects.all().order_by('-id')[:3]  # Últimos 3 productos
-    return render(request, 'shop/index.html', {'productos': productos, 'blogs':blogs})
+    blogs = Blog.objects.all().order_by('-id')[:3]
+    productos = Producto.objects.filter(stock__gt=0).order_by('-id')[:3]
+    
+    return render(request, 'shop/index.html', {'productos': productos, 'blogs': blogs})
+
 
 def inicio_sesion(request):
     if request.method == 'POST':
@@ -68,10 +70,15 @@ def blog(request):
     return render(request, 'shop/blog.html', {'blogs': blogs})
 
 def shop(request):
-    query = request.GET.get('q', '')  # Obtener el valor del input (o vacío si no hay)
-    productos = Producto.objects.filter(nombre__icontains=query) if query else Producto.objects.all()
+    query = request.GET.get('q', '')
+    
+    if query:
+        productos = Producto.objects.filter(nombre__icontains=query, stock__gt=0)
+    else:
+        productos = Producto.objects.filter(stock__gt=0)
     
     return render(request, 'shop/shop.html', {'productos': productos, 'query': query})
+
 
 def thankyou(request):
     return render(request, 'shop/thankyou.html')
