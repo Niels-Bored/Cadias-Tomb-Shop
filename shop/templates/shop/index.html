@@ -116,7 +116,11 @@
 							<img src="{{ producto.url_imagen }}" class="img-fluid product-thumbnail">
 							<h3 class="product-title">{{ producto.nombre }}</h3>
 							<strong class="product-price">${{ producto.precio }}</strong>
-
+							{% if producto.stock > 1 %}
+								<p>{{ producto.stock }} disponibles</p>
+							{% else %}
+								<p style="color: red;">Sólo uno disponible</p>
+							{% endif %}
 							<span onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.url_imagen }}', '{{ producto.precio }}', '{{ producto.marca }}', '{{ producto.stock }}')" class="icon-cross">
 								<img src="{% static 'shop/images/cross.svg' %}" class="img-fluid">
 							</span>
