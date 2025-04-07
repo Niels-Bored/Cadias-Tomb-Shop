@@ -52,6 +52,7 @@
 					</ul>
 
 					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+							
 						{% if request.user.is_authenticated %}
 							<li>
 								<a class="nav-link active" href="{% url 'user' %}">Hola, {{ request.user.username }}</a>
@@ -67,7 +68,8 @@
 									<img src="{% static 'shop/images/user.svg' %}">
 								</a>
 							</li>
-						{% endif %}
+						{% endif %}	
+						
 						<li style="position: relative;">
 							<a class="nav-link" href="{% url 'cart' %}">
 								<img src="{% static 'shop/images/cart.svg' %}">
@@ -101,43 +103,66 @@
 		<div class="untree_co-section">
 		    <div class="container">
 		      <div class="row justify-content-center">
-				
-				
-					<div class="col-md-6 mb-5 mb-md-0">
-						<h2 class="h3 mb-3 text-black">Inicio de Sesión</h2>
-						<div class="p-3 p-lg-5 border bg-white">
-							<form method="POST">
-								{% csrf_token %}
-								<div class="form-group row mb-5">
-									<div class="col-md-12">
-										<label for="c_email_address" class="text-black">Nombre de usuario<span class="text-danger">*</span></label>
-										<input type="text" class="form-control" id="c_email_address" name="username">
-									</div>
-								</div>
-
-								<div class="form-group row mb-5">
-									<div class="col-md-12">
-									<label for="password" class="text-black">Contraseña<span class="text-danger">*</span></label>
-									<input type="password" class="form-control" id="password" name="password">
-									</div>
-								</div>
-								<div class="form-group">
-									<button type="submit" class="btn btn-black btn-lg py-3 col-md-12">Iniciar Sesión</button>
-									
-								</div>
-								{% if error %}
-									<p style="color:red;">{{ error }}</p>
-								{% endif %}
-								<label style="margin-top: 10px;" class="text-black">¿No tienes una cuenta? Has una <a href="{% url 'signup' %}">aquí</a></label>
-							</form>
+		        <div class="col-md-6 mb-5 mb-md-0">
+		          <h2 class="h3 mb-3 text-black">Información de Usuario</h2>
+		          <div class="p-3 p-lg-5 border bg-white">
+		            <form method="POST">
+						{% csrf_token %}
+						<div class="form-group row">
+							<div class="col-md-6">
+								<label for="first_name" class="text-black">Nombre</label>
+								<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Ej. Ghazghkull" value="{{ user.first_name }}">
+							</div>
+							<div class="col-md-6">
+								<label for="last_name" class="text-black">Apellidos</label>
+								<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Ej. Mag Uruk Thraka" value="{{ user.last_name }}">
+							</div>
 						</div>
-					</div>
+
+						<div class="form-group row mb-5">
+							<div class="col-md-6">
+								<label for="email" class="text-black">Correo</label>
+								<input type="email" class="form-control" id="email" name="email" placeholder="Ej. waaagh@mail.com" value="{{ user.email }}">
+							</div>
+							<div class="col-md-6">
+								<label for="username" class="text-black">Nombre de usuario</label>
+								<input type="text" class="form-control" id="username" name="username" placeholder=" Ej. profetadelwaaagh" value="{{ user.username }}">
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<div class="col-md-12">
+								<label for="password1" class="text-black">Nueva contraseña <span class="text-danger">*</span></label>
+								<input type="password" class="form-control" id="password1" name="password1" placeholder="Nueva contraseña (opcional)">
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<div class="col-md-12">
+								<label for="password2" class="text-black">Confirmar nueva contraseña <span class="text-danger">*</span></label>
+								<input type="password" class="form-control" id="password2" name="password2" placeholder="Confirmar nueva contraseña">
+							</div>
+						</div>
+
+						{% if messages %}
+						<ul>
+							{% for message in messages %}
+							<li>{{ message }}</li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+						
+						<div class="form-group" style="margin-top: 20px;">
+							<button type="submit" class="btn btn-black btn-lg py-3 col-md-12">Actualizar</button>
+						</div>
+					</form>
+		          </div>
+		        </div>
 		      <!-- </form> -->
 		    </div>
 		  </div>
 
 		<div style="margin-bottom: 100px;"></div>
-
 
 		<!-- Start Footer Section -->
 		<footer class="footer-section">

@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Producto, Blog
+from django.contrib import messages
 
 class HomeView(View):
     def get(self, request):
@@ -51,6 +52,42 @@ class SignupView(View):
             username=username, email=email, password=password1
         )
         return redirect('login')
+
+class UserView(LoginRequiredMixin, View):
+    login_url = 'login'  # Redirige si no está autenticado
+
+    def get(self, request):
+        return render(request, 'shop/user.html', {
+            'user': request.user
+        })
+
+    def post(self, request):
+        user = request.user
+
+        firstname = request.POST['first_name']
+        lastname = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        # Verificar si las contraseñas coinciden (opcional cambiarla)
+        if password1 and password2:
+            if password1 != password2:
+                messages.error(request, 'Las contraseñas no coinciden.')
+                return render(request, 'shop/update_profile.html', {'user': user})
+            else:
+                user.set_password(password1)  # Cambiar contraseña
+
+        # Actualizar los demás campos
+        user.first_name = firstname
+        user.last_name = lastname
+        user.username = username
+        user.email = email
+        user.save()
+
+        messages.success(request, 'Perfil actualizado correctamente.')
+        return redirect('user')
 
 class CartView(View):
     def get(self, request):
