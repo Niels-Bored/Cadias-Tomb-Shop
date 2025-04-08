@@ -66,8 +66,6 @@ class UserView(LoginRequiredMixin, View):
 
         firstname = request.POST['first_name']
         lastname = request.POST['last_name']
-        username = request.POST['username']
-        email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
@@ -82,8 +80,6 @@ class UserView(LoginRequiredMixin, View):
         # Actualizar los demás campos
         user.first_name = firstname
         user.last_name = lastname
-        user.username = username
-        user.email = email
         user.save()
 
         messages.success(request, 'Perfil actualizado correctamente.')

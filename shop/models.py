@@ -13,7 +13,7 @@ class Producto(models.Model):
 
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    url_imagen = models.CharField(max_length=300)
+    url_imagen = models.URLField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     marca = models.CharField(max_length=100, choices=MARCAS, default='JR')
     stock = models.IntegerField()
@@ -44,7 +44,7 @@ class Venta(models.Model):
 class Blog(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=100)
-    url_imagen = models.CharField(max_length=300)
+    url_imagen = models.URLField()
     descripcion = models.CharField(max_length=200)
     autor = models.CharField(max_length=100)
     fecha_publicacion = models.DateField(auto_now_add=True)
