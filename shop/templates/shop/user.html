@@ -1,279 +1,75 @@
-<!-- /*
-* Bootstrap 5
-* Template Name: Furni
-* Template Author: Untree.co
-* Template URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/ -->
+
+
+
+{% extends 'shop/base.html' %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="author" content="Untree.co">
-  <link rel="shortcut icon" href="favicon.png">
+{% block title %}Tienda{% endblock %}
 
-  <meta name="description" content="" />
-  <meta name="keywords" content="bootstrap, bootstrap4" />
+{% block content %}	
+	<div class="untree_co-section">
+		<div class="container">
+			<div class="row justify-content-center">
+			<div class="col-md-6 mb-5 mb-md-0">
+				<h2 class="h3 mb-3 text-black">Información de Usuario</h2>
+				<div class="p-3 p-lg-5 border bg-white">
+				<form method="POST">
+					{% csrf_token %}
+					<div class="form-group row">
+						<div class="col-md-6">
+							<label for="first_name" class="text-black">Nombre</label>
+							<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Ej. Ghazghkull" value="{{ user.first_name }}">
+						</div>
+						<div class="col-md-6">
+							<label for="last_name" class="text-black">Apellidos</label>
+							<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Ej. Mag Uruk Thraka" value="{{ user.last_name }}">
+						</div>
+					</div>
 
-		<!-- Bootstrap CSS -->
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'shop/css/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
-        <link rel="stylesheet" href="{% static 'shop/css/tiny-slider.css' %}">
-		<link rel="stylesheet" href="{% static 'shop/css/estilos.css' %}">
-		<title>Cadia's Tomb</title>
-	</head>
+					<div class="form-group row mb-5">
+						<div class="col-md-6">
+							<label for="email" class="text-black">Correo</label>
+							<input type="email" class="form-control" id="email" name="email" placeholder="Ej. waaagh@mail.com" value="{{ user.email }}" readonly>
+						</div>
+						<div class="col-md-6">
+							<label for="username" class="text-black">Nombre de usuario</label>
+							<input type="text" class="form-control" id="username" name="username" placeholder=" Ej. profetadelwaaagh" value="{{ user.username }}" readonly>
+						</div>
+					</div>
 
-	<body>
+					<div class="form-group row">
+						<div class="col-md-12">
+							<label for="password1" class="text-black">Nueva contraseña <span class="text-danger">*</span></label>
+							<input type="password" class="form-control" id="password1" name="password1" placeholder="Nueva contraseña (opcional)">
+						</div>
+					</div>
 
-		<!-- Start Header/Navigation -->
-		<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+					<div class="form-group row">
+						<div class="col-md-12">
+							<label for="password2" class="text-black">Confirmar nueva contraseña <span class="text-danger">*</span></label>
+							<input type="password" class="form-control" id="password2" name="password2" placeholder="Confirmar nueva contraseña">
+						</div>
+					</div>
 
-			<div class="container">
-				<a class="navbar-brand" href="{% url 'home' %}">Cadia's Tomb<span>.</span></a>
-
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-
-				<div class="collapse navbar-collapse" id="navbarsFurni">
-					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item">
-							<a class="nav-link" href="{% url 'home' %}">Home</a>
-						</li>
-						<li><a class="nav-link" href="{% url 'shop' %}">Tienda</a></li>
-						<li><a class="nav-link" href="{% url 'about' %}">Nosotros</a></li>
-						<li><a class="nav-link" href="{% url 'blog' %}">Blog</a></li>
-						<!-- <li><a class="nav-link" href="blog.html">Blog</a></li> -->
-						<li><a class="nav-link" href="{% url 'contact' %}">Contáctanos</a></li>
+					{% if messages %}
+					<ul>
+						{% for message in messages %}
+						<li>{{ message }}</li>
+						{% endfor %}
 					</ul>
-
-					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-							
-						{% if request.user.is_authenticated %}
-							<li>
-								<a class="nav-link active" href="{% url 'user' %}">Hola, {{ request.user.username }}</a>
-							</li>
-							<li>
-								<a class="nav-link" href="{% url 'logout' %}">
-									<svg style="fill:white" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M16 2v7h-2v-5h-12v16h12v-5h2v7h-16v-20h16zm2 9v-4l6 5-6 5v-4h-10v-2h10z"/></svg>
-								</a>
-							</li>
-						{% else %}
-							<li>
-								<a class="nav-link" href="{% url 'login' %}">
-									<img src="{% static 'shop/images/user.svg' %}">
-								</a>
-							</li>
-						{% endif %}	
-						
-						<li style="position: relative;">
-							<a class="nav-link" href="{% url 'cart' %}">
-								<img src="{% static 'shop/images/cart.svg' %}">
-								<span id="cart-count" class="cart-badge">0</span>
-							</a>
-						</li>
-					</ul>
+					{% endif %}
+					
+					<div class="form-group" style="margin-top: 20px;">
+						<button type="submit" class="btn btn-black btn-lg py-3 col-md-12">Actualizar</button>
+					</div>
+				</form>
 				</div>
 			</div>
-				
-		</nav>
-		<!-- End Header/Navigation -->
+			<!-- </form> -->
+		</div>
+		</div>
 
-		<!-- Start Hero Section -->
-			<!-- <div class="hero">
-				<div class="container">
-					<div class="row justify-content-between">
-						<div class="col-lg-5">
-							<div class="intro-excerpt">
-								<h1>Checkout</h1>
-							</div>
-						</div>
-						<div class="col-lg-7">
-							
-						</div>
-					</div>
-				</div>
-			</div> -->
-		<!-- End Hero Section -->
+	<div style="margin-bottom: 100px;"></div>
 
-		<div class="untree_co-section">
-		    <div class="container">
-		      <div class="row justify-content-center">
-		        <div class="col-md-6 mb-5 mb-md-0">
-		          <h2 class="h3 mb-3 text-black">Información de Usuario</h2>
-		          <div class="p-3 p-lg-5 border bg-white">
-		            <form method="POST">
-						{% csrf_token %}
-						<div class="form-group row">
-							<div class="col-md-6">
-								<label for="first_name" class="text-black">Nombre</label>
-								<input type="text" class="form-control" id="first_name" name="first_name" placeholder="Ej. Ghazghkull" value="{{ user.first_name }}">
-							</div>
-							<div class="col-md-6">
-								<label for="last_name" class="text-black">Apellidos</label>
-								<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Ej. Mag Uruk Thraka" value="{{ user.last_name }}">
-							</div>
-						</div>
+	<script src="{% static 'shop/js/shop.js' %}"></script>
+{% endblock %}
 
-						<div class="form-group row mb-5">
-							<div class="col-md-6">
-								<label for="email" class="text-black">Correo</label>
-								<input type="email" class="form-control" id="email" name="email" placeholder="Ej. waaagh@mail.com" value="{{ user.email }}" readonly>
-							</div>
-							<div class="col-md-6">
-								<label for="username" class="text-black">Nombre de usuario</label>
-								<input type="text" class="form-control" id="username" name="username" placeholder=" Ej. profetadelwaaagh" value="{{ user.username }}" readonly>
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<div class="col-md-12">
-								<label for="password1" class="text-black">Nueva contraseña <span class="text-danger">*</span></label>
-								<input type="password" class="form-control" id="password1" name="password1" placeholder="Nueva contraseña (opcional)">
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<div class="col-md-12">
-								<label for="password2" class="text-black">Confirmar nueva contraseña <span class="text-danger">*</span></label>
-								<input type="password" class="form-control" id="password2" name="password2" placeholder="Confirmar nueva contraseña">
-							</div>
-						</div>
-
-						{% if messages %}
-						<ul>
-							{% for message in messages %}
-							<li>{{ message }}</li>
-							{% endfor %}
-						</ul>
-						{% endif %}
-						
-						<div class="form-group" style="margin-top: 20px;">
-							<button type="submit" class="btn btn-black btn-lg py-3 col-md-12">Actualizar</button>
-						</div>
-					</form>
-		          </div>
-		        </div>
-		      <!-- </form> -->
-		    </div>
-		  </div>
-
-		<div style="margin-bottom: 100px;"></div>
-
-		<!-- Start Footer Section -->
-		<footer class="footer-section">
-			<div class="container relative">
-
-				<div class="sofa-img">
-					<img src="https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png" alt="Image" class="img-fluid">
-				</div>
-
-				<!-- <div class="row">
-					<div class="col-lg-8">
-						<div class="subscription-form">
-							<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
-
-							<form action="#" class="row g-3">
-								<div class="col-auto">
-									<input type="text" class="form-control" placeholder="Enter your name">
-								</div>
-								<div class="col-auto">
-									<input type="email" class="form-control" placeholder="Enter your email">
-								</div>
-								<div class="col-auto">
-									<button class="btn btn-primary">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-
-						</div>
-					</div>
-				</div> -->
-
-				<div class="row g-5 mb-5">
-					<div class="col-lg-4">
-						<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Cadia's Tomb<span>.</span></a></div>
-						<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
-
-						<ul class="list-unstyled custom-social">
-							<li><a href="https://www.facebook.com/profile.php?id=61551049687918" target="_blank"><span class="fa fa-brands fa-facebook-f"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-twitter" target="_blank"></span></a></li>
-							<li><a href="https://www.instagram.com/cadiastombhobbystore?igsh=dXZjNGRybWYxMTJz" target="_blank"><span class="fa fa-brands fa-instagram"></span></a></li>
-							<li><a href="#"><span class="fa fa-brands fa-linkedin" target="_blank"></span></a></li>
-						</ul>
-					</div>
-
-					<div class="col-lg-8">
-						<div class="row links-wrap">
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">About us</a></li>
-									<li><a href="#">Services</a></li>
-									<li><a href="#">Blog</a></li>
-									<li><a href="#">Contact us</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Support</a></li>
-									<li><a href="#">Knowledge base</a></li>
-									<li><a href="#">Live chat</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Our team</a></li>
-									<li><a href="#">Leadership</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-								</ul>
-							</div>
-
-							<div class="col-6 col-sm-6 col-md-3">
-								<ul class="list-unstyled">
-									<li><a href="#">Nordic Chair</a></li>
-									<li><a href="#">Kruzo Aero</a></li>
-									<li><a href="#">Ergonomic Chair</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-				</div>
-
-				<div class="border-top copyright">
-					<div class="row pt-4">
-						<div class="col-lg-6">
-							<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>  <!-- License information: https://untree.co/license/ -->
-            </p>
-						</div>
-
-						<div class="col-lg-6 text-center text-lg-end">
-							<ul class="list-unstyled d-inline-flex ms-auto">
-								<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-								<li><a href="#">Privacy Policy</a></li>
-							</ul>
-						</div>
-
-					</div>
-				</div>
-
-			</div>
-		</footer>
-		<!-- End Footer Section -->	
-
-
-		<script src="{% static 'shop/js/bootstrap.bundle.min.js' %}"></script>
-		<script src="{% static 'shop/js/tiny-slider.js' %}"></script>
-		<script src="{% static 'shop/js/custom.js' %}"></script>
-		<script src="{% static 'shop/js/shop.js' %}"></script>
-	</body>
-
-</html>
