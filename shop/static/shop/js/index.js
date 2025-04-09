@@ -42,8 +42,12 @@ function agregarAlCarrito(id, nombre, urlImagen, precio, marca, stock) {
             imageWidth: 100,
             imageHeight: 100,
             icon: "success",
-            confirmButtonText: "Aceptar"
-        });
+            confirmButtonText: "Aceptar",
+            customClass: {
+                confirmButton: 'btn btn-warning'  // Fondo amarillo estilo Bootstrap
+              },
+              buttonsStyling: false  // ¡Esto es clave para que funcione tu clase Bootstrap!
+            });
     }else{
         Swal.fire({
             title: "Cantidad excedida",
@@ -52,8 +56,13 @@ function agregarAlCarrito(id, nombre, urlImagen, precio, marca, stock) {
             imageWidth: 100,
             imageHeight: 100,
             icon: "error",
-            confirmButtonText: "Aceptar"
-        });
+            confirmButtonText: "Aceptar",
+            customClass: {
+              confirmButton: 'btn btn-warning'  // Fondo amarillo estilo Bootstrap
+            },
+            buttonsStyling: false  // ¡Esto es clave para que funcione tu clase Bootstrap!
+          });
+          
     }
 }
 
@@ -65,7 +74,11 @@ function verDetallers(titulo, descripcion, urlImagen) {
         imageWidth: 100,
         imageHeight: 100,
         icon: "info",
-        confirmButtonText: "Aceptar"
-    });
+        confirmButtonText: "Aceptar",
+        customClass: {
+            confirmButton: 'btn btn-warning'  // Fondo amarillo estilo Bootstrap
+          },
+          buttonsStyling: false  // ¡Esto es clave para que funcione tu clase Bootstrap!
+        });
 
 }
