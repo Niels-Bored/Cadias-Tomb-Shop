@@ -57,6 +57,11 @@ class SignupView(View):
             return render(
                 request, "shop/signup.html", {"error": "El usuario ya existe"}
             )
+        
+        if User.objects.filter(email=email).exists():
+            return render(
+                request, "shop/signup.html", {"error": "El correo ya fue usado"}
+            )
 
         user = User.objects.create_user(
             first_name=firstname,
