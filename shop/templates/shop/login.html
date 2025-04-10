@@ -16,7 +16,7 @@
 							<div class="form-group row mb-5">
 								<div class="col-md-12">
 									<label for="c_email_address" class="text-black">Nombre de usuario<span class="text-danger">*</span></label>
-									<input type="text" class="form-control" id="c_email_address" name="username">
+									<input type="text" class="form-control" id="username" name="username">
 								</div>
 							</div>
 
@@ -31,7 +31,7 @@
 								
 							</div>
 							{% if error %}
-								<p style="color:red;">{{ error }}</p>
+								<p class="login-error" style="color:red;">{{ error }}</p>
 							{% endif %}
 							<label style="margin-top: 10px;" class="text-black">¿No tienes una cuenta? Has una <a href="{% url 'signup' %}">aquí</a></label>
 						</form>

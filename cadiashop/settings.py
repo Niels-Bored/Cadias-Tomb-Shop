@@ -16,6 +16,7 @@ print(f'\nEnvironment: {ENV}')
 # Env variables
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
+TEST_HEADLESS = os.getenv('TEST_HEADLESS') == 'True'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -32,7 +33,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     #local apps
-    "shop"
+    "shop",
+    "core"
 ]
 
 MIDDLEWARE = [

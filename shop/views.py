@@ -36,7 +36,7 @@ class LoginView(View):
             )
 
 
-class SignupView(View):
+class SignUpView(View):
     def get(self, request):
         return render(request, "shop/signup.html")
 

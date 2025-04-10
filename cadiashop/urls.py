@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib import admin
-from shop.views import HomeView, LoginView, SignupView, UserView, CartView, CheckoutView, ContactView, AboutView, ThankYouView, BlogListView, ShopView
+from shop.views import HomeView, LoginView, SignUpView, UserView, CartView, CheckoutView, ContactView, AboutView, ThankYouView, BlogListView, ShopView
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 
@@ -12,7 +12,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', HomeView.as_view(), name='home'),
     path('login/', LoginView.as_view(), name='login'),
-    path('signup/', SignupView.as_view(), name='signup'),
+    path('signup/', SignUpView.as_view(), name='signup'),
     path('user/', UserView.as_view(), name='user'),
     path('cart/', CartView.as_view(), name='cart'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
