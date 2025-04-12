@@ -141,3 +141,63 @@ class SignUpViewTestCase(TestCase):
         self.assertEqual(User.objects.all().count(),1)
 
 
+class LogOutViewTestCase(TestCase):
+    """Class to test user logout
+    """
+    def setUp(self):
+        pass
+
+    def test_session_closed():
+        pass
+
+class CartViewTestCase(TestCase):
+    """Class to test user cart actions
+    """
+    def setUp(self):
+        pass
+
+    def test_add_product():
+        pass
+
+    def test_remove_product():
+        pass
+
+    def test_stock_not_exceeded():
+        pass
+
+    def test_stock_exceeded():
+        pass
+
+    def test_not_zero_amount():
+        pass
+
+class ShopViewTestCase(TestCase):
+    """Class to test user actions on shop
+    """
+    def setUp(self):
+        pass
+
+    def test_stock_not_exceeded():
+        pass
+
+    def test_stock_exceeded():
+        pass
+
+class HomeViewTestCase(TestCase):
+    """Class to test user actions on home
+    """
+    def setUp(self):
+        pass
+
+    def test_stock_not_exceeded():
+        pass
+
+    def test_stock_exceeded():
+        pass
+
+class BlogViewTestCase(TestCase):
+    """Class to test user actions on blog
+    """
+    def setUp(self):
+        pass
+

@@ -1,12 +1,14 @@
-from django.views import View
-from django.views.generic import TemplateView, ListView
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Producto, Blog
+from django.views.generic import TemplateView, ListView
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 from django.contrib import messages
+from django.views import View
 
+from .models import Producto, Blog
 
 class HomeView(View):
     def get(self, request):
@@ -35,6 +37,11 @@ class LoginView(View):
                 request, "shop/login.html", {"error": "Credenciales incorrectas"}
             )
 
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
 
 class SignUpView(View):
     def get(self, request):
