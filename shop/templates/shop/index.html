@@ -12,7 +12,7 @@
 							<h1>Juegos y más<span class="d-block">¡Unete al hobby!</span></h1>
 							<!-- <h1>Modern Interior <span class="d-block">Design Studio</span></h1> -->
 							<p class="mb-4">Somos tu mejor alternativa para adquirir todo lo que necesitas para adentrarte en el hobby, unete a nuestra comunidad y te enseñaremos todo lo que necesitas para pintar o jugar tus wargames favoritos.</p>
-							<p><a href="{% url 'shop' %}" class="btn btn-secondary me-2">Compra ahora</a><a href="#seccion-destino" class="btn btn-white-outline">Explora</a></p>
+							<p><a href="{% url 'shop' 1 %}" class="btn btn-secondary me-2">Compra ahora</a><a href="#seccion-destino" class="btn btn-white-outline">Explora</a></p>
 						</div>
 					</div>
 					<div class="col-lg-7">
@@ -34,7 +34,7 @@
 				<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
 					<h2 class="mb-4 section-title">Revisa nuestro catalogo de productos</h2>
 					<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
-					<p><a href="{% url 'shop' %}" class="btn">Explora</a></p>
+					<p><a href="{% url 'shop' 1 %}" class="btn">Explora</a></p>
 				</div> 
 				<!-- End Column 1 -->
 				{% for producto in productos %}

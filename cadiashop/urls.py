@@ -28,6 +28,6 @@ urlpatterns = [
     path("about/", AboutView.as_view(), name="about"),
     path("thankyou/", ThankYouView.as_view(), name="thankyou"),
     path("blog/", BlogListView.as_view(), name="blog"),
-    path("shop/", ShopView.as_view(), name="shop"),
+    path('shop/<int:page>/', ShopView.as_view(), name='shop'),
     path("logout/", LogoutView.as_view(), name="logout"),
 ]

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, InvalidPage
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
@@ -6,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.http import Http404
 from django.views import View
 
 from .models import Producto, Blog
@@ -145,7 +147,7 @@ class BlogListView(View):
         return render(request, "shop/blog.html", {"blogs": blogs})
 
 
-class ShopView(View):
+""" class ShopView(View):
     def get(self, request):
         query = request.GET.get("q", "")
         if query:
@@ -154,4 +156,27 @@ class ShopView(View):
             productos = Producto.objects.filter(stock__gt=0)
         return render(
             request, "shop/shop.html", {"productos": productos, "query": query}
-        )
+        ) """
+
+class ShopView(View):
+    def get(self, request, page=1):
+        query = request.GET.get("q", "")
+        
+        if query:
+            productos_queryset = Producto.objects.filter(nombre__icontains=query, stock__gt=0).order_by('-id')
+        else:
+            productos_queryset = Producto.objects.filter(stock__gt=0).order_by('-id')
+
+        paginator = Paginator(productos_queryset, 20)
+
+        try:
+            productos = paginator.page(page)
+        except InvalidPage:
+            raise Http404("Página no válida")
+
+        context = {
+            "productos": productos,
+            "query": query,
+        }
+
+        return render(request, "shop/shop.html", context)

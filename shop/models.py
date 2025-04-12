@@ -5,11 +5,12 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Producto(models.Model):
     MARCAS = [
-        ("Corvus Belli", "Corvus Belli"),
         ("Games Workshop", "Games Workshop"),
+        ("Corvus Belli", "Corvus Belli"),
         ("Warlord Games", "Warlord Games"),
         ("Vallejo", "Vallejo"),
         ("Army Painter", "Army Painter"),
+        ("Citadel Colour", "Citadel Colour"),
     ]
 
     id = models.AutoField(primary_key=True)
