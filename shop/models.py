@@ -58,7 +58,13 @@ class Venta(models.Model):
         verbose_name_plural = "Ventas"
         verbose_name = "Venta"
 
+class Tag(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.nombre
+    
 class Blog(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=100)
@@ -66,6 +72,7 @@ class Blog(models.Model):
     descripcion = models.CharField(max_length=200)
     autor = models.CharField(max_length=100)
     fecha_publicacion = models.DateField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name='blogs')  # Aquí se establece la relación
 
     def __str__(self):
         return self.titulo

@@ -4,6 +4,13 @@
 
 {% block content %}
 
+	<style>
+		.tag-list{
+			box-sizing: border-box;
+			width: auto;
+			margin-left: 10px;
+		}
+	</style>
 	<!-- Start Hero Section -->
 		<div class="hero">
 			<div class="container">
@@ -26,15 +33,14 @@
 	<!-- End Hero Section -->
 
 	
-	<div id="seccion-destino" class="product-section">
-
+	
 	<!-- Start Blog Section -->
 	<div class="blog-section">
 		<div class="container">
 			
 			<div class="row">
 
-				{% for blog in blogs %}
+				<!-- {% for blog in blogs %}
 				<div style="cursor:pointer;" onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.url_imagen }}')" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
 					<div class="post-entry">
 						<a class="post-thumbnail"><img src="{{ blog.url_imagen }}" alt="Image" class="img-fluid"></a>
@@ -48,6 +54,56 @@
 				</div>
 				{% empty %}
 					<p>No hay blogs disponibles.</p>
+				{% endfor %} -->
+
+				<div class="mb-4">
+					<h5>Filtrar por etiqueta:</h5>
+					<div class="btn-group" role="group" aria-label="Tags">
+						<a href="{% url 'blog' %}" class="btn btn-outline-secondary {% if not tag_seleccionado %}active{% endif %}">Todos</a>
+						{% for tag in tags %}
+							<a href="?tag={{ tag.nombre }}" class="btn btn-outline-secondary {% if tag.nombre == tag_seleccionado %}active{% endif %}">
+								{{ tag.nombre }}
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+
+				<hr>
+
+				{% for blog in blogs %}
+					<!-- <div class="mb-4">
+						<h3>{{ blog.titulo }}</h3>
+						<p><small>{{ blog.fecha_publicacion }}</small></p>
+						<p>{{ blog.descripcion|truncatewords:40 }}</p>
+						<p>
+							{% for tag in blog.tags.all %}
+								<span class="badge bg-warning text-dark">{{ tag.nombre }}</span>
+							{% endfor %}
+						</p>
+						<hr>
+					</div> -->
+					
+						<div style="cursor:pointer;" onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.url_imagen }}')" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+							<div class="post-entry">
+								<a class="post-thumbnail"><img src="{{ blog.url_imagen }}" alt="Image" class="img-fluid"></a>
+								<div class="post-content-entry">
+									<h3><a href="#">{{ blog.titulo }}</a></h3>
+									<div class="meta">
+										<span>by <a href="#">{{ blog.autor }}</a></span> <span>on <a href="#">{{ blog.fecha_publicacion }}</a></span>
+									</div>
+								</div>
+							</div>
+							<p class="tag-list">
+								{% for tag in blog.tags.all %}
+									<span class="badge bg-warning text-dark">{{ tag.nombre }}</span>
+								{% endfor %}
+							</p>
+						</div>
+						
+					
+					
+				{% empty %}
+					<p>No se encontraron entradas con esta etiqueta.</p>
 				{% endfor %}
 
 			</div>

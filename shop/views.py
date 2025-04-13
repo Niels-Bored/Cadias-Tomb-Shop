@@ -1,8 +1,8 @@
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, InvalidPage
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -10,14 +10,26 @@ from django.contrib import messages
 from django.http import Http404
 from django.views import View
 
-from .models import Producto, Blog
+from .models import Producto, Blog, Tag
 
 class HomeView(View):
     def get(self, request):
-        blogs = Blog.objects.all().order_by("-id")[:3]
+        tag_nombre = request.GET.get("tag")
+        tags = Tag.objects.all()
+
+        if tag_nombre:
+            tag = get_object_or_404(Tag, nombre=tag_nombre)
+            blogs = Blog.objects.filter(tags=tag).order_by("-id")
+        else:
+            blogs = Blog.objects.all().order_by("-id")[:3]
+
         productos = Producto.objects.filter(stock__gt=0).order_by("-id")[:3]
         return render(
-            request, "shop/index.html", {"productos": productos, "blogs": blogs}
+            request, "shop/index.html", {
+                "productos": productos, 
+                "blogs": blogs,
+                "tags": tags,
+                "tag_seleccionado": tag_nombre}
         )
 
 
@@ -121,7 +133,6 @@ class CartView(View):
             {"user_authenticated": request.user.is_authenticated},
         )
 
-
 class CheckoutView(LoginRequiredMixin, View):
     login_url = "login"
 
@@ -143,20 +154,20 @@ class ThankYouView(TemplateView):
 
 class BlogListView(View):
     def get(self, request):
-        blogs = Blog.objects.all().order_by("-id")[:20]
-        return render(request, "shop/blog.html", {"blogs": blogs})
+        tag_nombre = request.GET.get("tag")
+        tags = Tag.objects.all()
 
-
-""" class ShopView(View):
-    def get(self, request):
-        query = request.GET.get("q", "")
-        if query:
-            productos = Producto.objects.filter(nombre__icontains=query, stock__gt=0)
+        if tag_nombre:
+            tag = get_object_or_404(Tag, nombre=tag_nombre)
+            blogs = Blog.objects.filter(tags=tag).order_by("-id")
         else:
-            productos = Producto.objects.filter(stock__gt=0)
-        return render(
-            request, "shop/shop.html", {"productos": productos, "query": query}
-        ) """
+            blogs = Blog.objects.all().order_by("-id")[:20]
+
+        return render(request, "shop/blog.html", {
+            "blogs": blogs,
+            "tags": tags,
+            "tag_seleccionado": tag_nombre
+        })
 
 class ShopView(View):
     def get(self, request, page=1):

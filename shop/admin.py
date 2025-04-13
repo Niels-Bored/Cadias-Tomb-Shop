@@ -17,3 +17,8 @@ class VentasAdmin(admin.ModelAdmin):
 class BlogsAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'descripcion', 'autor', 'fecha_publicacion')
     search_fields = ('titulo','autor')
+    filter_horizontal = ('tags',)
+    
+@admin.register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('nombre',)

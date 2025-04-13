@@ -3,6 +3,13 @@
 {% block title %}Tienda{% endblock %}
 
 {% block content %}
+	<style>
+		.tag-list{
+			box-sizing: border-box;
+			width: auto;
+			margin-left: 10px;
+		}
+	</style>
 	<!-- Start Hero Section -->
 		<div class="hero">
 			<div class="container">
@@ -178,6 +185,11 @@
 								<span>by <a href="#">{{ blog.autor }}</a></span> <span>on <a href="#">{{ blog.fecha_publicacion }}</a></span>
 							</div>
 						</div>
+						<p class="tag-list">
+							{% for tag in blog.tags.all %}
+								<span class="badge bg-warning text-dark">{{ tag.nombre }}</span>
+							{% endfor %}
+						</p>
 					</div>
 				</div>
 				{% empty %}
