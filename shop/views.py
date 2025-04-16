@@ -75,9 +75,9 @@ class SignUpView(View):
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
 
-        message_title = "Done"
-        message_text = "User created successfully. " \
-            "Check your email to confirm your account."
+        message_title = "Excelente"
+        message_text = "Tu usuario se creo correctamente " \
+            "Revisa tu correo para confirmar tu cuenta."
         message_type = "success"
 
         if password1 != password2:

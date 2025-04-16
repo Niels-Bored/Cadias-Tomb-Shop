@@ -199,6 +199,22 @@
 		<script src="{% static 'shop/js/tiny-slider.js' %}"></script>
 		<script src="{% static 'shop/js/custom.js' %}"></script>
 		<script src="{% static 'shop/js/cart-count.js' %}"></script>
+		<script>
+			const mesageTitle = '{{message_title}}'
+			const messageText = '{{message_text}}'
+			const messageType = '{{message_type}}'
+		
+			if (mesageTitle != '') {
+				Swal.fire({
+					title: mesageTitle,
+					text: messageText,
+					icon: messageType,
+					confirmButtonText: 'Ok'
+				})
+			}
+		</script>
 	</body>
-
 </html>
+
+
+

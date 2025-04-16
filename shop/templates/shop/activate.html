@@ -77,19 +77,3 @@
     </form>
 {% endblock %}
 
-{% block extrascript %}
-<script>
-    const mesageTitle = '{{message_title}}'
-    const messageText = '{{message_text}}'
-    const messageType = '{{message_type}}'
-
-    if (mesageTitle != '') {
-        Swal.fire({
-            title: mesageTitle,
-            text: messageText,
-            icon: messageType,
-            confirmButtonText: 'Ok'
-        })
-    }
-</script>
-{% endblock %}
