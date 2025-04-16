@@ -140,7 +140,7 @@ class ActivationView(View):
             "message_text": "Revisa el enlace o intenta registrarte de nuevo",
             "message_type": "error"
         }
-        error_response = render(request, 'shop/signup.html', context=error_context)
+        error_response = render(request, 'shop/index.html', context=error_context)
         
         is_valid, user = tokens.validate_user_token(user_id, token, filter_active=False)
         
@@ -153,12 +153,13 @@ class ActivationView(View):
         user.save()
         
         # Success message
-        return render(request, 'shop/login.html', context={
+        return render(request, 'shop/index.html', context={
             "message_title": "Cuenta activada",
             "message_text": "Tu cuenta ha sido activada correctamente. "
                             "Ahora puedes iniciar sesión",
             "message_type": "success"
         })
+    
     
 class UserView(LoginRequiredMixin, View):
     login_url = "login"  # Redirige si no está autenticado
