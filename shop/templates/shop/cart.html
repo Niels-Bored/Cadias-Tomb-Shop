@@ -80,5 +80,67 @@
             </div>
           </div>
 		  <script src="{% static 'shop/js/cart.js' %}"></script>
+      <script>
+        document.getElementById("btn").addEventListener("click", async function () {
+            const isUserAuthenticated = {{ user_authenticated|yesno:"true,false" }};
+            if (!isUserAuthenticated) {
+                window.location.href = "{% url 'login' %}";
+                return;
+            }
+        
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        
+            const response = await fetch("{% url 'verificar_carrito' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ productos: carrito })
+            });
+        
+            const result = await response.json();
+        
+            if (result.login_required) {
+                window.location.href = "{% url 'login' %}";
+                return;
+            }
+        
+            if (result.productos_insuficientes.length > 0) {
+                let productosQuitados = [];
+        
+                // Filtrar carrito y obtener nombres de productos quitados
+                carrito = carrito.filter(producto => {
+                    if (result.productos_insuficientes.includes(producto.id)) {
+                        productosQuitados.push(producto.nombre);
+                        return false; // no lo incluye
+                    }
+                    return true; // lo mantiene
+                });
+        
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+        
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Stock insuficiente',
+                    html: `<p>Los siguientes productos no tienen suficiente stock:</p><ul style="text-align: left;">${productosQuitados.map(p => `<li>${p}</li>`).join("")}</ul>`,
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    // Recargar carrito para reflejar los cambios
+                    window.location.href = "{% url 'cart' %}";
+                });
+        
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Todo listo!',
+                    text: 'Todos los productos tienen suficiente stock. Puedes continuar con la compra.',
+                    confirmButtonText: 'Aceptar'
+                });
+                // Aquí podrías redirigir a /checkout si lo deseas
+                // window.location.href = "{% url 'checkout' %}";
+            }
+        });
+        </script>        
 
 {% endblock %}

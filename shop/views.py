@@ -2,21 +2,23 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, InvalidPage
 from django.views.generic import TemplateView, ListView
+from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
 from django.http import Http404
 from django.views import View
 from shop import decorators
-from django.utils.decorators import method_decorator
 
 
 from utils.stripe import get_stripe_link_sale, update_transaction_link
 from utils.emails import send_email
 from utils import emails, tokens
+
 from .models import Producto, Blog, Tag, Venta
 
 class HomeView(View):
@@ -199,6 +201,27 @@ class CartView(View):
             "shop/cart.html",
             {"user_authenticated": request.user.is_authenticated},
         )
+    
+class VerifyCartView(View):
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return JsonResponse({"login_required": True})
+
+        import json
+        data = json.loads(request.body)
+        productos = data.get("productos", [])
+
+        productos_insuficientes = []
+
+        for item in productos:
+            try:
+                producto = Producto.objects.get(id=item["id"])
+                if producto.stock < item["cantidad"]:
+                    productos_insuficientes.append(item["id"])
+            except Producto.DoesNotExist:
+                productos_insuficientes.append(item["id"])
+
+        return JsonResponse({"productos_insuficientes": productos_insuficientes})
 
 class CheckoutView(LoginRequiredMixin, View):
     login_url = "login"
@@ -259,7 +282,9 @@ class ShopView(View):
         }
 
         return render(request, "shop/shop.html", context)
-    
+
+class Sale(View):
+    pass    
 
 class SaleDoneView(View):
     def get(self, request, sale_id: str):

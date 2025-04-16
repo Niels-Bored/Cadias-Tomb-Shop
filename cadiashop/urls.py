@@ -13,7 +13,9 @@ from shop.views import (
     ThankYouView,
     BlogListView,
     ShopView,
-    ActivationView
+    ActivationView,
+    SaleDoneView,
+    VerifyCartView
 )
 
 
@@ -32,4 +34,6 @@ urlpatterns = [
     path('shop/<int:page>/', ShopView.as_view(), name='shop'),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("activate/<int:user_id>-<token>/", ActivationView.as_view(), name='activate'),
+    path('verificar-carrito/', VerifyCartView.as_view(), name='verificar_carrito'),
+    path('sale-done/<sale_id>/', SaleDoneView.as_view(), name='sale-done')
 ]
