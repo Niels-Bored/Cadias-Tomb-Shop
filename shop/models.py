@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -44,8 +46,8 @@ class Producto(models.Model):
             return False
 
 class Venta(models.Model):
-    id = models.AutoField(primary_key=True)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    id = models.CharField(primary_key=True, max_length=12, unique=True)
+    productos = models.ManyToManyField(Producto)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     direccion = models.CharField(max_length=500)
     fecha_venta = models.DateField(auto_now_add=True)
@@ -53,10 +55,38 @@ class Venta(models.Model):
 
     def __str__(self):
         return self.id
+    
+    def save(self, *args, **kwargs):
+
+        if not self.id:
+            # Custom id
+            self.id = uuid.uuid4().hex[:12]
+            while Venta.objects.filter(id=self.id).exists():
+                self.id = uuid.uuid4().hex[:12]
+        super(Venta, self).save(*args, **kwargs)
+
+    
+    def get_sale_data_dict(self) -> dict:
+        """ Return sale summary data as dictionary
+
+        Returns:
+            dict: Sale summary data
+        """
+
+        sale_data = {
+            "Order Number": self.id,
+            "Email": self.usuario.email,
+            "Full Name": self.usuario.first_name +" " +self.usuario.last_name,
+            "Address": self.direccion,
+            "Total": self.total
+        }
+
+        return sale_data
 
     class Meta:
         verbose_name_plural = "Ventas"
         verbose_name = "Venta"
+
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)

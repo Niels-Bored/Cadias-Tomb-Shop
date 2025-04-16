@@ -7,10 +7,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.conf import settings
 from django.http import Http404
 from django.views import View
 
-from .models import Producto, Blog, Tag
+
+from utils.stripe import get_stripe_link_sale, update_transaction_link
+from utils.emails import send_email
+from utils import emails, tokens
+from .models import Producto, Blog, Tag, Venta
 
 class HomeView(View):
     def get(self, request):
@@ -62,12 +67,18 @@ class SignUpView(View):
         return render(request, "shop/signup.html")
 
     def post(self, request):
+        
         firstname = request.POST["first_name"]
         lastname = request.POST["last_name"]
         username = request.POST["username"]
         email = request.POST["email"]
         password1 = request.POST["password1"]
         password2 = request.POST["password2"]
+
+        message_title = "Done"
+        message_text = "User created successfully. " \
+            "Check your email to confirm your account."
+        message_type = "success"
 
         if password1 != password2:
             return render(
@@ -90,8 +101,31 @@ class SignUpView(View):
             username=username,
             email=email,
             password=password1,
+            is_active=False
         )
-        return redirect("login")
+
+        id_token = tokens.get_id_token(user)
+       
+        emails.send_email(
+            subject="Activate your account",
+            first_name=firstname,
+            last_name=lastname,
+            texts=[
+                "Thank you for signing up!",
+                "Your account has been created successfully.",
+                "Just one more step to start using it.",
+            ],
+            cta_link=f"{settings.HOST}/activate/{id_token}/",
+            cta_text="Activate Now",
+            to_email=email,
+        )
+
+        return render(request, 'shop/signup.html', context={
+            "title": "Sign Up",
+            "message_title": message_title,
+            "message_text": message_text,
+            "message_type": message_type,
+        })
 
 
 class UserView(LoginRequiredMixin, View):
@@ -169,6 +203,7 @@ class BlogListView(View):
             "tag_seleccionado": tag_nombre
         })
 
+
 class ShopView(View):
     def get(self, request, page=1):
         query = request.GET.get("q", "")
@@ -191,3 +226,93 @@ class ShopView(View):
         }
 
         return render(request, "shop/shop.html", context)
+    
+
+class SaleDoneView(View):
+    def get(self, request, sale_id: str):
+        """ Update sale status and redirect to landing
+
+        Args:
+            request (HttpRequest): Django request object
+            sale_id (str): sale id from url
+        """
+
+        landing_done_page = settings.HOST
+        landing_error_page = landing_done_page + f"?sale-id={sale_id}&sale-status=error"
+
+        # Get sale
+        sale = Venta.objects.filter(id=sale_id).first()
+        if not sale:
+            return redirect(landing_error_page)
+
+        # Get link from stripe
+        sale.save()
+        paymend_found = update_transaction_link(sale)
+        if not paymend_found:
+            
+            # Send error email to client
+            email_texts = [
+                "There was an error with your payment.",
+                "Your order has not been processed.",
+                "Please try again or contact us for support."
+            ]
+                
+            send_email(
+                subject="Nyx Trackers Payment Error",
+                first_name=sale.user.first_name,
+                last_name=sale.user.last_name,
+                texts=email_texts,
+                cta_link=f"{settings.HOST}/admin/",
+                cta_text="Visit dashboard",
+                to_email=sale.user.email,
+            )
+            
+            # Redirect to landing with error
+            return redirect(landing_error_page)
+
+        # Update stock
+        """ current_stock = models.StoreStatus.objects.get(key='current_stock')
+        current_stock_int = int(current_stock.value)
+        current_stock.value = str(current_stock_int - 1)
+        current_stock.save() """
+
+        # Get sale data
+        sale_data = sale.get_sale_data_dict()
+
+        email_texts = [
+            "Your payment has been confirmed!",
+            "Your order is being processed.",
+            "You will receive notifications about the status of your order.",
+            "Here your order details:"
+        ]
+
+        logo_url = ""
+
+        # Confirmation email after payment
+        send_email(
+            subject="Nyx Trackers Payment Confirmation",
+            first_name=sale.usuario.first_name,
+            last_name=sale.usuario.last_name,
+            texts=email_texts,
+            cta_link=f"{settings.HOST}/admin/",
+            cta_text="Go to dashboard",
+            to_email=sale.usuario.email,
+            key_items=sale_data,
+            image_src=logo_url
+        )
+
+        # Send email to admin
+        send_email(
+            subject="Nyx Trackers New Sale",
+            first_name="Admin",
+            last_name="",
+            texts=["A new sale has been made."],
+            cta_link=f"{settings.HOST}/admin/store/sale/{sale_id}/change/",
+            cta_text="View sale in dashboard",
+            to_email=settings.ADMIN_EMAIL,
+            key_items=sale_data,
+            image_src=logo_url
+        )
+
+        landing_done_page += f"?sale-id={sale_id}&sale-status=success"
+        return redirect(landing_done_page)
