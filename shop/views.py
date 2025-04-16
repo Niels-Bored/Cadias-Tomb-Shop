@@ -10,6 +10,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.http import Http404
 from django.views import View
+from shop import decorators
+from django.utils.decorators import method_decorator
 
 
 from utils.stripe import get_stripe_link_sale, update_transaction_link
@@ -76,7 +78,7 @@ class SignUpView(View):
         password2 = request.POST["password2"]
 
         message_title = "Excelente"
-        message_text = "Tu usuario se creo correctamente " \
+        message_text = "Tu usuario se ha creado correctamente. " \
             "Revisa tu correo para confirmar tu cuenta."
         message_type = "success"
 
@@ -107,16 +109,16 @@ class SignUpView(View):
         id_token = tokens.get_id_token(user)
        
         emails.send_email(
-            subject="Activate your account",
+            subject="Activa tu cuenta",
             first_name=firstname,
             last_name=lastname,
             texts=[
-                "Thank you for signing up!",
-                "Your account has been created successfully.",
-                "Just one more step to start using it.",
+                "¡Gracias por crear una cuenta!",
+                "Tu cuenta se ha creado correctamente",
+                "Sólo un paso más para empezar a usarla",
             ],
             cta_link=f"{settings.HOST}/activate/{id_token}/",
-            cta_text="Activate Now",
+            cta_text="Activar cuenta",
             to_email=email,
         )
 
@@ -127,7 +129,37 @@ class SignUpView(View):
             "message_type": message_type,
         })
 
-
+class ActivationView(View):
+    @method_decorator(decorators.logged(redirect_url='/'))
+    def get(self, request, user_id: int, token: str):
+        
+        user = User.objects.filter(id=user_id)
+        
+        error_context = {
+            "message_title": "Error de Activación",
+            "message_text": "Revisa el enlace o intenta registrarte de nuevo",
+            "message_type": "error"
+        }
+        error_response = render(request, 'shop/signup.html', context=error_context)
+        
+        is_valid, user = tokens.validate_user_token(user_id, token, filter_active=False)
+        
+        # render error message if token is invalid
+        if not is_valid:
+            return error_response
+        
+        # Activate user
+        user.is_active = True
+        user.save()
+        
+        # Success message
+        return render(request, 'shop/login.html', context={
+            "message_title": "Cuenta activada",
+            "message_text": "Tu cuenta ha sido activada correctamente. "
+                            "Ahora puedes iniciar sesión",
+            "message_type": "success"
+        })
+    
 class UserView(LoginRequiredMixin, View):
     login_url = "login"  # Redirige si no está autenticado
 
