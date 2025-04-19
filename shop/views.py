@@ -275,6 +275,7 @@ class Sale(View):
             data = json.loads(request.body)
             username = data.get("username")
             productos = data.get("productos")
+            direccion = data.get("direccion")
         except:
             return JsonResponse({
                 "status":"error",
@@ -319,7 +320,7 @@ class Sale(View):
         user = users.first()
         sale = Venta.objects.create(
             usuario=user, 
-            direccion="Entrega en tienda",
+            direccion=direccion,
             total=total)
         
         for item in productos:

@@ -39,7 +39,63 @@
                       <a href="{% url 'shop' 1 %}"><button class="btn btn-outline-black btn-sm btn-block">Seguir Comprando</button></a>
                     </div>
                   </div>
-                 
+                  <!-- <div class="row">
+                    <div class="col-md-12">
+                      <label class="text-black h4" for="coupon">Coupon</label>
+                      <p>Enter your coupon code if you have one.</p>
+                    </div>
+                    <div class="col-md-8 mb-3 mb-md-0">
+                      <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+                    </div>
+                    <div class="col-md-4">
+                      <button class="btn btn-black">Apply Coupon</button>
+                    </div>
+                  </div> -->
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="text-black h4" for="coupon">Dirección</label>
+                      <p>Recoge tu pedido en nuestra tienda o específica tu dirección</p>
+                    </div>
+                    <label for="c_ship_different_address" class="text-black" data-bs-toggle="collapse" href="#ship_different_address" role="button" aria-expanded="false" aria-controls="ship_different_address"><input type="checkbox" value="1" id="c_ship_different_address">¿Quieres que te enviemos tu paquete a domicilio?</label>
+                    <div class="collapse" id="ship_different_address">
+                      <div class="py-2">
+                        <div class="form-group row  mb-3">
+                          <div class="col-md-12">
+                            <label for="c_diff_address" class="text-black">Dirección <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Dirección de la calle">
+                          </div>
+                        </div>
+  
+                        <div class="form-group">
+                          <input type="text" class="form-control" id="address-kind" name="address-kind" placeholder="Edificio departamental, casa, etc. (opcional)">
+                        </div>
+  
+                        <div class="form-group row">
+                          <div class="col-md-6">
+                            <label for="c_diff_state_country" class="text-black">Estado <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="state" name="state" placeholder="Ej. Aguascalientes">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="c_diff_postal_zip" class="text-black">Código Postal <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="postal_zip" name="postal_zip" placeholder="Ej. 20000">
+                          </div>
+                        </div>
+  
+                        <div class="form-group row mb-5">
+                          <div class="col-md-6">
+                            <label for="c_diff_email_address" class="text-black">Correo de contacto <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="email_address" name="email_address" placeholder="Ej. ork@gmail.com">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="c_diff_phone" class="text-black">Celular <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Ej. 449 000 0000">
+                          </div>
+                        </div>
+  
+                      </div>
+  
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-md-6 pl-5">
@@ -89,8 +145,57 @@
             }
         
             let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-        
+            
+            const checkbox = document.getElementById("c_ship_different_address");
+
+            const address = document.getElementById("address").value;
+            const addressKind = document.getElementById("address-kind").value;
+            const state = document.getElementById("state").value;
+            const postalZip = document.getElementById("postal_zip").value;
+            const emailAddress = document.getElementById("email_address").value;
+            const phone = document.getElementById("phone").value;
+
+            // Si el checkbox está marcado, validar que todos los campos estén llenos
+            if (checkbox.checked) {
+              if (!address || !state || !postalZip || !emailAddress || !phone) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Campos incompletos",
+                  text: "Por favor llena todos los campos de dirección para poder continuar.",
+                });
+                return; // Detiene la ejecución del código
+              }
+            }
+
+            let payload = {
+              username: userID,
+              productos: carrito,
+              direccion: "Entrega en tienda"
+            };
+
+            if (checkbox.checked) {
+              // Si el usuario eligió que le envíen el paquete a domicilio
+              /* payload.direccion = {
+                address: address,
+                kind: addressKind,
+                state: state,
+                postal_zip: postalZip,
+                email: emailAddress,
+                phone: phone,
+              }; */
+              payload.direccion = address + "/" + addressKind + "/" + state + "/" + postalZip + "/" + emailAddress + "/" + phone
+            }
+
             const response = await fetch("{% url 'sale' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+              },
+              body: JSON.stringify(payload)
+            });
+
+            /* const response = await fetch("{% url 'sale' %}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -100,7 +205,7 @@
                   username : userID, 
                   productos: carrito 
                 })
-            });
+            }); */
         
             const result = await response.json();
         
@@ -135,14 +240,13 @@
                 });
               }
             } else {
-                Swal.fire({
+                /* Swal.fire({
                     icon: 'success',
                     title: '¡Todo listo!',
                     text: 'Todos los productos tienen suficiente stock. Puedes continuar con la compra.',
                     confirmButtonText: 'Aceptar'
-                });
-                // Aquí podrías redirigir a /checkout si lo deseas
-                // window.location.href = "{% url 'checkout' %}";
+                }); */
+                window.location.href = result.data.stripe_url;
             }
         });
         </script>        
