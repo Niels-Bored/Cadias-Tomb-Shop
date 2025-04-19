@@ -7,7 +7,7 @@ from shop.models import Venta
 
 
 def get_stripe_link(product_name: str, total: float,
-                    description: str, email: str, sale_id: str) -> dict:
+                    description: str, email: str, sale_id: str, back_page:str) -> dict:
     """ Send data to stripe api and return stripe url
 
     Args:
@@ -16,6 +16,7 @@ def get_stripe_link(product_name: str, total: float,
         description (str): order description
         email (str): user email
         sale_id (str): sale id from models
+        back_page: page to return in case sale goes wrong
         
     Returns:
         str: stripe checkout link
@@ -24,15 +25,15 @@ def get_stripe_link(product_name: str, total: float,
     products = {}
     products[product_name] = {
         "amount": 1,
-        "image_url": "https://www.nyxtrackers.com/logo.png",
+        "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png",
         "price": total,
         "description": description
     }
     
     request_json = {
         "user": settings.STRIPE_API_USER,
-        "url": f"{settings.LANDING_HOST}/",
-        "url_success": f"{settings.HOST}/api/store/sale-done/{sale_id}",
+        "url": f"{settings.HOST}{back_page}",
+        "url_success": f"{settings.HOST}/sale-done/{sale_id}",
         "products": products,
         "email": email,
     }

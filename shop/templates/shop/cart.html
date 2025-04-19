@@ -90,13 +90,16 @@
         
             let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
         
-            const response = await fetch("{% url 'verificar_carrito' %}", {
+            const response = await fetch("{% url 'sale' %}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRFToken": "{{ csrf_token }}"
                 },
-                body: JSON.stringify({ productos: carrito })
+                body: JSON.stringify({
+                  username : userID, 
+                  productos: carrito 
+                })
             });
         
             const result = await response.json();
@@ -105,13 +108,14 @@
                 window.location.href = "{% url 'login' %}";
                 return;
             }
-        
-            if (result.productos_insuficientes.length > 0) {
+            
+            if (result.data.productos_insuficientes != undefined) {
+              if (result.data.productos_insuficientes.length > 0){
                 let productosQuitados = [];
         
                 // Filtrar carrito y obtener nombres de productos quitados
                 carrito = carrito.filter(producto => {
-                    if (result.productos_insuficientes.includes(producto.id)) {
+                    if (result.data.productos_insuficientes.includes(producto.id)) {
                         productosQuitados.push(producto.nombre);
                         return false; // no lo incluye
                     }
@@ -129,7 +133,7 @@
                     // Recargar carrito para reflejar los cambios
                     window.location.href = "{% url 'cart' %}";
                 });
-        
+              }
             } else {
                 Swal.fire({
                     icon: 'success',

@@ -200,6 +200,7 @@
 		<script src="{% static 'shop/js/custom.js' %}"></script>
 		<script src="{% static 'shop/js/cart-count.js' %}"></script>
 		<script>
+			let userID = '{{ request.user.username }}'
 			const mesageTitle = '{{message_title}}'
 			const messageText = '{{message_text}}'
 			const messageType = '{{message_type}}'

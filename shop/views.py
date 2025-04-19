@@ -13,13 +13,17 @@ from django.conf import settings
 from django.http import Http404
 from django.views import View
 from shop import decorators
+from django.views.decorators.csrf import csrf_exempt
 
 
-from utils.stripe import get_stripe_link_sale, update_transaction_link
+from utils.stripe import get_stripe_link
 from utils.emails import send_email
 from utils import emails, tokens
 
 from .models import Producto, Blog, Tag, Venta
+from django.contrib.auth.models import User
+
+import json
 
 class HomeView(View):
     def get(self, request):
@@ -201,27 +205,6 @@ class CartView(View):
             "shop/cart.html",
             {"user_authenticated": request.user.is_authenticated},
         )
-    
-class VerifyCartView(View):
-    def post(self, request):
-        if not request.user.is_authenticated:
-            return JsonResponse({"login_required": True})
-
-        import json
-        data = json.loads(request.body)
-        productos = data.get("productos", [])
-
-        productos_insuficientes = []
-
-        for item in productos:
-            try:
-                producto = Producto.objects.get(id=item["id"])
-                if producto.stock < item["cantidad"]:
-                    productos_insuficientes.append(item["id"])
-            except Producto.DoesNotExist:
-                productos_insuficientes.append(item["id"])
-
-        return JsonResponse({"productos_insuficientes": productos_insuficientes})
 
 class CheckoutView(LoginRequiredMixin, View):
     login_url = "login"
@@ -281,11 +264,87 @@ class ShopView(View):
             "query": query,
         }
 
-        return render(request, "shop/shop.html", context)
+        return render(request, "shop/shop.html", context)  
 
 class Sale(View):
-    pass    
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return JsonResponse({"login_required": True})
+       
+        try:
+            data = json.loads(request.body)
+            username = data.get("username")
+            productos = data.get("productos")
+        except:
+            return JsonResponse({
+                "status":"error",
+                "message":"Invalid JSON",
+                "data":{}
+            })
 
+        productos_insuficientes = []
+
+        description = ""
+        total = 0
+        products = []
+        for item in productos:
+            try:
+                producto = Producto.objects.get(id=item["id"])
+                if producto.stock < item["cantidad"]:
+                    productos_insuficientes.append(item["id"])
+            except Producto.DoesNotExist:
+                productos_insuficientes.append(item["id"])
+            else:
+                description += f"{item['nombre']} x {item['cantidad']} \n"
+                total+=float(item['precio'])*item["cantidad"]
+                products.append(producto)
+
+        if productos_insuficientes:
+            return JsonResponse({
+                "status":"error",
+                "message":"Not enough stock",
+                "data":{
+                    "productos_insuficientes": productos_insuficientes
+                }
+            })
+        
+        users = User.objects.filter(username=username)
+        if not users:
+            return JsonResponse({
+                "status":"error",
+                "message":"Invalid username",
+                "data":{}
+            })
+
+        user = users.first()
+        sale = Venta.objects.create(
+            usuario=user, 
+            direccion="Entrega en tienda",
+            total=total)
+        
+        for item in productos:
+            producto = Producto.objects.get(id=item["id"])
+            sale.productos.add(producto)
+
+        sale.save()
+
+        stripe_url= get_stripe_link(
+            product_name="Pedido",
+            total=total,
+            description=description, 
+            email="abelsotovaldez@gmail.com", 
+            sale_id=sale.id, 
+            back_page="/cart" 
+        )
+        
+        return JsonResponse({
+                "status":"success",
+                "message":"Compra realizada exitosamente",
+                "data":{
+                    "stripe_url":stripe_url
+                }
+            })
+    
 class SaleDoneView(View):
     def get(self, request, sale_id: str):
         """ Update sale status and redirect to landing

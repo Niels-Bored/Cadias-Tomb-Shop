@@ -162,4 +162,9 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 
+#Host settings
 HOST = os.getenv('HOST')
+
+#Stripe settings
+STRIPE_API_USER = os.getenv('STRIPE_API_USER')
+STRIPE_API_HOST = os.getenv('STRIPE_API_HOST')
