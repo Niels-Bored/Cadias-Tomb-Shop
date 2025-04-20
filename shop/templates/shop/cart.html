@@ -135,9 +135,17 @@
               </div>
             </div>
           </div>
+          <div id="loader" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 1050; visibility: hidden;">
+            <div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
 		  <script src="{% static 'shop/js/cart.js' %}"></script>
       <script>
         document.getElementById("btn").addEventListener("click", async function () {
+          // Mostrar el loader
+            document.getElementById("loader").style.visibility = "visible";
+
             const isUserAuthenticated = {{ user_authenticated|yesno:"true,false" }};
             if (!isUserAuthenticated) {
                 window.location.href = "{% url 'login' %}";
@@ -174,15 +182,6 @@
             };
 
             if (checkbox.checked) {
-              // Si el usuario eligió que le envíen el paquete a domicilio
-              /* payload.direccion = {
-                address: address,
-                kind: addressKind,
-                state: state,
-                postal_zip: postalZip,
-                email: emailAddress,
-                phone: phone,
-              }; */
               payload.direccion = address + "/" + addressKind + "/" + state + "/" + postalZip + "/" + emailAddress + "/" + phone
             }
 
@@ -194,18 +193,6 @@
               },
               body: JSON.stringify(payload)
             });
-
-            /* const response = await fetch("{% url 'sale' %}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: JSON.stringify({
-                  username : userID, 
-                  productos: carrito 
-                })
-            }); */
         
             const result = await response.json();
         
@@ -240,12 +227,7 @@
                 });
               }
             } else {
-                /* Swal.fire({
-                    icon: 'success',
-                    title: '¡Todo listo!',
-                    text: 'Todos los productos tienen suficiente stock. Puedes continuar con la compra.',
-                    confirmButtonText: 'Aceptar'
-                }); */
+                document.getElementById("loader").style.visibility = "hidden";
                 window.location.href = result.data.stripe_url;
             }
         });
