@@ -46,10 +46,24 @@ class Producto(models.Model):
             return False
 
 class Venta(models.Model):
+
+    """
+    address: address,
+                kind: addressKind,
+                state: state,
+                postal_zip: postalZip,
+                email: emailAddress,
+                phone: phone,
+    """
     id = models.CharField(primary_key=True, max_length=12, unique=True)
     productos = models.ManyToManyField(Producto)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     direccion = models.CharField(max_length=500)
+    tipo = models.CharField(max_length=500)
+    estado = models.CharField(max_length=500)
+    codigo_postal = models.CharField(max_length=10)
+    correo = models.CharField(max_length=500)
+    telefono = models.CharField(max_length=50)
     fecha_venta = models.DateField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 

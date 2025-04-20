@@ -77,7 +77,7 @@
                           </div>
                           <div class="col-md-6">
                             <label for="c_diff_postal_zip" class="text-black">Código Postal <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="postal_zip" name="postal_zip" placeholder="Ej. 20000">
+                            <input type="number" class="form-control" id="postal_zip" name="postal_zip" placeholder="Ej. 20000">
                           </div>
                         </div>
   
@@ -178,11 +178,25 @@
             let payload = {
               username: userID,
               productos: carrito,
-              direccion: "Entrega en tienda"
+              direccion :{
+                address: "Entrega en tienda",
+                kind: "Tienda",
+                state: "Aguascalientes",
+                postal_zip: 20280,
+                email: null,
+                phone: null,
+              }
             };
 
             if (checkbox.checked) {
-              payload.direccion = address + "/" + addressKind + "/" + state + "/" + postalZip + "/" + emailAddress + "/" + phone
+              payload.direccion = {
+                address: address,
+                kind: addressKind,
+                state: state,
+                postal_zip: postalZip,
+                email: emailAddress,
+                phone: phone,
+              };
             }
 
             const response = await fetch("{% url 'sale' %}", {

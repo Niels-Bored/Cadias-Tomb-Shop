@@ -13,10 +13,8 @@ from django.conf import settings
 from django.http import Http404
 from django.views import View
 from shop import decorators
-from django.views.decorators.csrf import csrf_exempt
 
-
-from utils.stripe import get_stripe_link
+from utils.stripe import get_stripe_link, update_transaction_link
 from utils.emails import send_email
 from utils import emails, tokens
 
@@ -275,7 +273,7 @@ class Sale(View):
             data = json.loads(request.body)
             username = data.get("username")
             productos = data.get("productos")
-            direccion = data.get("direccion")
+            datos_direccion = data.get("direccion")
         except:
             return JsonResponse({
                 "status":"error",
@@ -283,6 +281,8 @@ class Sale(View):
                 "data":{}
             })
 
+        print(datos_direccion)
+        print(datos_direccion["address"])
         productos_insuficientes = []
 
         description = ""
@@ -318,9 +318,20 @@ class Sale(View):
             })
 
         user = users.first()
+
+        if not datos_direccion["email"]:
+            datos_direccion["email"] = user.email
+        if not datos_direccion["phone"]:
+            datos_direccion["phone"] = "No especificado"
+
         sale = Venta.objects.create(
             usuario=user, 
-            direccion=direccion,
+            direccion=datos_direccion["address"],
+            tipo=datos_direccion["kind"],
+            estado=datos_direccion["state"],
+            codigo_postal=datos_direccion["postal_zip"],
+            correo=datos_direccion["email"],
+            telefono=datos_direccion["phone"],
             total=total)
         
         for item in productos:
