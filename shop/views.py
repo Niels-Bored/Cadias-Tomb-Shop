@@ -195,15 +195,6 @@ class UserView(LoginRequiredMixin, View):
         messages.success(request, "Perfil actualizado correctamente.")
         return redirect("user")
 
-
-class CartView(View):
-    def get(self, request):
-        return render(
-            request,
-            "shop/cart.html",
-            {"user_authenticated": request.user.is_authenticated},
-        )
-
 class CheckoutView(LoginRequiredMixin, View):
     login_url = "login"
 
@@ -212,8 +203,35 @@ class CheckoutView(LoginRequiredMixin, View):
 
 
 class ContactView(TemplateView):
-    template_name = "shop/contact.html"
+    def get(self, request):
+        return render(request, "shop/contact.html")
 
+    def post(self, request):
+        firstname = request.POST["firstname"]
+        lastname = request.POST["lastname"]
+        email = request.POST["email"]
+        message = request.POST["message"]
+
+        emails.send_email(
+            subject=f"Tienes un nuevo mensaje en Cadia's Tomb Shop",
+            first_name=firstname,
+            last_name=lastname,
+            texts=[
+                f"Tienes un mensaje de {firstname} {lastname}",
+                f"Mensaje: {message}",
+                f"Correo de {firstname} {lastname}: {email}",
+            ],
+            cta_link=f"{settings.HOST}/admin/auth/user/",
+            cta_text="Ir al panel de administración",
+            to_email="abelsv168@gmail.com",
+        )
+        
+        return render(request, 'shop/contact.html', context={
+            "message_title": "Correo enviado",
+            "message_text": "Tu correo ha sido enviado a los administradores. "
+                            "Te responderemos en menos de 24 horas",
+            "message_type": "success"
+        })
 
 class AboutView(TemplateView):
     template_name = "shop/about.html"
@@ -263,6 +281,16 @@ class ShopView(View):
         }
 
         return render(request, "shop/shop.html", context)  
+
+
+class CartView(View):
+    def get(self, request):
+        return render(
+            request,
+            "shop/cart.html",
+            {"user_authenticated": request.user.is_authenticated},
+        )
+
 
 class Sale(View):
     def post(self, request):
