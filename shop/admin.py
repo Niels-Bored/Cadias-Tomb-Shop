@@ -11,7 +11,7 @@ class ProductosAdmin(admin.ModelAdmin):
 @admin.register(models.Venta)
 class VentasAdmin(admin.ModelAdmin):
     list_display = ('id', 'usuario', 'direccion', 'tipo', 'estado', 'codigo_postal', 'correo', 'telefono', 'fecha_venta', 'total')
-    search_fields = ('usuario',)
+    search_fields = ('usuario__username',)
 
 @admin.register(models.Blog)
 class BlogsAdmin(admin.ModelAdmin):
