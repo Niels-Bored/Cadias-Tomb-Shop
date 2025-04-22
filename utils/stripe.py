@@ -36,6 +36,7 @@ def get_stripe_link(product_name: str, total: float,
         "url_success": f"{settings.HOST}/sale-done/{sale_id}",
         "products": products,
         "email": email,
+        "currency": "mxn"
     }
     
     res = requests.post(settings.STRIPE_API_HOST, json=request_json)

@@ -324,7 +324,7 @@ class Sale(View):
             except Producto.DoesNotExist:
                 productos_insuficientes.append(item["id"])
             else:
-                description += f"{item['nombre']} x {item['cantidad']} \n"
+                description += f"{item['nombre']} x {item['cantidad']}\n"
                 total+=float(item['precio'])*item["cantidad"]
                 products.append(producto)
 
