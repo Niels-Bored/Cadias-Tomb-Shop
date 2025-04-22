@@ -46,15 +46,10 @@ class Producto(models.Model):
             return False
 
 class Venta(models.Model):
-
-    """
-    address: address,
-                kind: addressKind,
-                state: state,
-                postal_zip: postalZip,
-                email: emailAddress,
-                phone: phone,
-    """
+    STATUS_VALUES = [
+        ("Pendiente", "Pendiente"),
+        ("Pagada", "Pagada")
+    ]
     id = models.CharField(primary_key=True, max_length=12, unique=True)
     productos = models.ManyToManyField(Producto)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -66,6 +61,7 @@ class Venta(models.Model):
     telefono = models.CharField(max_length=50)
     fecha_venta = models.DateField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=100, choices=STATUS_VALUES, default="JR")
 
     def __str__(self):
         return self.id

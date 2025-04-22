@@ -1,0 +1,90 @@
+.jazzmin-page {
+  background: #2C3333;
+}
+.jazzmin-page img {
+  border-radius: 10%;
+}
+.jazzmin-page .card-body {
+  background: #395B64;
+}
+.jazzmin-page .card-body {
+  color: #E7F6F2;
+}
+.jazzmin-page button[type=submit] {
+  background: #A5C9CA;
+  color: #2C3333;
+  border: 2px solid #A5C9CA;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.jazzmin-page button[type=submit]:hover {
+  background: rgba(44, 51, 51, 0);
+  color: #A5C9CA;
+}
+.jazzmin-page .input-group input:focus {
+  border-color: #A5C9CA;
+}
+.jazzmin-page .callout.callout-danger a:hover {
+  color: #A5C9CA !important;
+}
+.jazzmin-page .login-box-msg.small {
+  font-size: 12px;
+  padding-bottom: 5px;
+}
+.jazzmin-page .login-box-msg a {
+  font-weight: bold;
+  color: #A5C9CA;
+  text-decoration: underline;
+}
+.jazzmin-page .login-box-msg a:hover {
+  color: #2C3333;
+}
+.jazzmin-page .input-group.is-invalid {
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 15px;
+  margin-bottom: 30px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 100%;
+}
+.countdown .counters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.countdown .counters p {
+  margin: 10px;
+}
+
+#sale_form .card-body a {
+  color: #2C3333 !important;
+}
+#sale_form .card-body a:hover {
+  color: #2C3333 !important;
+}
+
+.promocode-wrapper {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.promocode-wrapper a {
+  width: 70%;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 500px) {
+  footer.main-footer {
+    text-align: center !important;
+  }
+}/*# sourceMappingURL=custom.css.map */
