@@ -17,6 +17,8 @@ print(f'\nEnvironment: {ENV}')
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 TEST_HEADLESS = os.getenv('TEST_HEADLESS') == 'True'
+STORAGE_AWS = os.environ.get("STORAGE_AWS") == "True"
+USE_SQLITE = os.environ.get("USE_SQLITE") == "True"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -37,11 +39,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "whitenoise.runserver_nostatic",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -74,7 +78,7 @@ WSGI_APPLICATION = "cadiashop.wsgi.application"
 # Setup database for testing and production
 IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
-if IS_TESTING or True:
+if IS_TESTING or USE_SQLITE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -133,16 +137,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-# Local development (Windows or local server)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'mi_app/static'),
 ]
@@ -170,6 +164,43 @@ HOST = os.getenv('HOST')
 #Stripe settings
 STRIPE_API_USER = os.getenv('STRIPE_API_USER')
 STRIPE_API_HOST = os.getenv('STRIPE_API_HOST')
+
+# Storage settings
+if STORAGE_AWS:
+    # aws settings
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+    # s3 static settings
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    STATICFILES_STORAGE = 'cadiashop.storage_backends.StaticStorage'
+    # s3 public media settings
+
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'cadiashop.storage_backends.PublicMediaStorage'
+
+    # s3 private media settings
+    PRIVATE_MEDIA_LOCATION = 'private'
+    PRIVATE_FILE_STORAGE = 'cadiashop.storage_backends.PrivateMediaStorage'
+    
+    # Disable Django's own staticfiles handling in favour of WhiteNoise
+    # for greater consistency between gunicorn and
+    STATIC_ROOT = None
+    MEDIA_ROOT = None
+else:
+    # Local development (Windows or local server)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    
+    # Static files (CSS, JavaScript, Images)
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
 
 JAZZMIN_SETTINGS = {
     # Yext

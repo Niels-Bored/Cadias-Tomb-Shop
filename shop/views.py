@@ -214,8 +214,8 @@ class ContactView(TemplateView):
 
         emails.send_email(
             subject=f"Tienes un nuevo mensaje en Cadia's Tomb Shop",
-            first_name=firstname,
-            last_name=lastname,
+            first_name="Admin",
+            last_name="",
             texts=[
                 f"Tienes un mensaje de {firstname} {lastname}",
                 f"Mensaje: {message}",
@@ -223,7 +223,7 @@ class ContactView(TemplateView):
             ],
             cta_link=f"{settings.HOST}/admin/auth/user/",
             cta_text="Ir al panel de administración",
-            to_email="abelsv168@gmail.com",
+            to_email="cadiastombmanagement@gmail.com",
         )
         
         return render(request, 'shop/contact.html', context={
@@ -396,21 +396,21 @@ class SaleDoneView(View):
         """
 
         landing_done_page = settings.HOST
-        landing_error_page = landing_done_page + f"?sale-id={sale_id}&sale-status=error"
+        landing_error_page = landing_done_page + f"?sale-status=error"
 
         # Get sale
-        sale = Venta.objects.filter(id=sale_id).first()
-        if not sale:
+        sales = Venta.objects.filter(id=sale_id)
+        if not sales:
             return redirect(landing_error_page)
 
+        sale = sales.first()
+        sale.status = "Pagada"
         # Get link from stripe
         sale.save()
         
         # Update stock
-        """ current_stock = models.StoreStatus.objects.get(key='current_stock')
-        current_stock_int = int(current_stock.value)
-        current_stock.value = str(current_stock_int - 1)
-        current_stock.save() """
+    
+        
 
         # Get sale data
         sale_data = sale.get_sale_data_dict()
@@ -422,16 +422,16 @@ class SaleDoneView(View):
             "Here your order details:"
         ]
 
-        logo_url = ""
+        logo_url = "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png"
 
         # Confirmation email after payment
         send_email(
-            subject="Nyx Trackers Payment Confirmation",
+            subject="Tu orden ha sido procesada con éxto",
             first_name=sale.usuario.first_name,
             last_name=sale.usuario.last_name,
             texts=email_texts,
-            cta_link=f"{settings.HOST}/admin/",
-            cta_text="Go to dashboard",
+            cta_link=f"{settings.HOST}",
+            cta_text="Seguir comprando",
             to_email=sale.usuario.email,
             key_items=sale_data,
             image_src=logo_url
@@ -439,12 +439,12 @@ class SaleDoneView(View):
 
         # Send email to admin
         send_email(
-            subject="Nyx Trackers New Sale",
+            subject="Tienes una compra nueva",
             first_name="Admin",
             last_name="",
-            texts=["A new sale has been made."],
+            texts=["Se ha hecho una nueva compra."],
             cta_link=f"{settings.HOST}/admin/store/sale/{sale_id}/change/",
-            cta_text="View sale in dashboard",
+            cta_text="Ver compra en el dashboard",
             to_email=settings.ADMIN_EMAIL,
             key_items=sale_data,
             image_src=logo_url
