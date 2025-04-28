@@ -17,7 +17,7 @@ class Producto(models.Model):
 
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    url_imagen = models.ImageField()
+    imagen = models.ImageField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     marca = models.CharField(max_length=100, choices=MARCAS, default="JR")
     stock = models.IntegerField()
@@ -51,7 +51,7 @@ class Venta(models.Model):
         ("Pagada", "Pagada")
     ]
     id = models.CharField(primary_key=True, max_length=12, unique=True)
-    productos = models.ManyToManyField(Producto)
+    detalles = models.ManyToManyField("Producto", through="VentaProducto", related_name="ventas")
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     direccion = models.CharField(max_length=500)
     tipo = models.CharField(max_length=500)
@@ -97,6 +97,10 @@ class Venta(models.Model):
         verbose_name_plural = "Ventas"
         verbose_name = "Venta"
 
+class VentaProducto(models.Model):
+    venta = models.ForeignKey("Venta", on_delete=models.CASCADE, related_name="detalle_venta")
+    producto = models.ForeignKey("Producto", on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
@@ -108,7 +112,7 @@ class Tag(models.Model):
 class Blog(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=100)
-    url_imagen = models.URLField()
+    imagen = models.ImageField()
     descripcion = models.CharField(max_length=200)
     autor = models.CharField(max_length=100)
     fecha_publicacion = models.DateField(auto_now_add=True)

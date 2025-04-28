@@ -58,7 +58,7 @@
 					{% for producto in productos %}
 						<div class="col-12 col-md-4 col-lg-3 mb-5">
 							<a class="product-item">
-								<img src="{{ producto.url_imagen }}" class="img-fluid product-thumbnail">
+								<img src="{{ producto.imagen.url }}" class="img-fluid product-thumbnail">
 								<h3 class="product-title">{{ producto.nombre }}</h3>
 								<strong class="product-price">${{ producto.precio }}</strong>
 								
@@ -67,7 +67,7 @@
 								{% else %}
 									<p style="color: red;">Sólo uno disponible</p>
 								{% endif %}	
-								<span onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.url_imagen }}', '{{ producto.precio }}', '{{ producto.marca }}', '{{ producto.stock }}')" class="icon-cross">
+								<span onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.imagen.url }}', '{{ producto.precio }}', '{{ producto.marca }}', '{{ producto.stock }}')" class="icon-cross">
 									<img src="{% static 'shop/images/cross.svg' %}" class="img-fluid">
 								</span>
 							</a>

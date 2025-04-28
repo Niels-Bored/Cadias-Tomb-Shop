@@ -1,5 +1,8 @@
 from django.urls import path
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+
 from shop.views import (
     HomeView,
     LoginView,
@@ -37,3 +40,6 @@ urlpatterns = [
     path('sale/', Sale.as_view(), name='sale'),
     path('sale-done/<sale_id>/', SaleDoneView.as_view(), name='sale-done')
 ]
+
+if not settings.STORAGE_AWS:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

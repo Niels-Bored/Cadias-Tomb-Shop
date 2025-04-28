@@ -40,21 +40,6 @@
 			
 			<div class="row">
 
-				<!-- {% for blog in blogs %}
-				<div style="cursor:pointer;" onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.url_imagen }}')" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
-					<div class="post-entry">
-						<a class="post-thumbnail"><img src="{{ blog.url_imagen }}" alt="Image" class="img-fluid"></a>
-						<div class="post-content-entry">
-							<h3><a href="#">{{ blog.titulo }}</a></h3>
-							<div class="meta">
-								<span>by <a href="#">{{ blog.autor }}</a></span> <span>on <a href="#">{{ blog.fecha_publicacion }}</a></span>
-							</div>
-						</div>
-					</div>
-				</div>
-				{% empty %}
-					<p>No hay blogs disponibles.</p>
-				{% endfor %} -->
 
 				<div class="mb-4">
 					<h5>Filtrar por etiqueta:</h5>
@@ -83,9 +68,9 @@
 						<hr>
 					</div> -->
 					
-						<div style="cursor:pointer;" onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.url_imagen }}')" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+						<div style="cursor:pointer;" onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.imagen.url }}')" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
 							<div class="post-entry">
-								<a class="post-thumbnail"><img src="{{ blog.url_imagen }}" alt="Image" class="img-fluid"></a>
+								<a class="post-thumbnail"><img src="{{ blog.imagen.url }}" alt="Image" class="img-fluid"></a>
 								<div class="post-content-entry">
 									<h3><a href="#">{{ blog.titulo }}</a></h3>
 									<div class="meta">

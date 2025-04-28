@@ -14,6 +14,7 @@ load_dotenv(env_path)
 print(f'\nEnvironment: {ENV}')
 
 # Env variables
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL') 
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 TEST_HEADLESS = os.getenv('TEST_HEADLESS') == 'True'

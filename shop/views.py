@@ -12,13 +12,15 @@ from django.contrib import messages
 from django.conf import settings
 from django.http import Http404
 from django.views import View
+
+
 from shop import decorators
 
 from utils.stripe import get_stripe_link, update_transaction_link
 from utils.emails import send_email
 from utils import emails, tokens
 
-from .models import Producto, Blog, Tag, Venta
+from .models import Producto, Blog, Tag, Venta, VentaProducto
 from django.contrib.auth.models import User
 
 import json
@@ -223,7 +225,7 @@ class ContactView(TemplateView):
             ],
             cta_link=f"{settings.HOST}/admin/auth/user/",
             cta_text="Ir al panel de administración",
-            to_email="cadiastombmanagement@gmail.com",
+            to_email=settings.ADMIN_EMAIL,
         )
         
         return render(request, 'shop/contact.html', context={
@@ -238,8 +240,12 @@ class AboutView(TemplateView):
 
 
 class ThankYouView(TemplateView):
-    template_name = "shop/thankyou.html"
-
+    def get(self, request):
+        return render(request, 'shop/thankyou.html', context={
+            "message_title": "Pedido realizado con éxito",
+            "message_text": "Te hemos enviado los detalles de tu pedido por correo",
+            "message_type": "success"
+        })
 
 class BlogListView(View):
     def get(self, request):
@@ -365,7 +371,16 @@ class Sale(View):
         
         for item in productos:
             producto = Producto.objects.get(id=item["id"])
-            sale.productos.add(producto)
+            cantidad = item["cantidad"]
+
+            # Crear relación en la tabla intermedia con la cantidad
+            VentaProducto.objects.create(
+                venta=sale,
+                producto=producto,
+                cantidad=cantidad
+            )
+
+
 
         sale.save()
 
@@ -409,17 +424,21 @@ class SaleDoneView(View):
         sale.save()
         
         # Update stock
-    
-        
+        for detalle in sale.detalle_venta.all():
+            if detalle.producto.reduce_stock(detalle.cantidad):
+                detalle.producto.save()
+            else:
+                # Manejo en caso de stock insuficiente
+                print(f"Stock insuficiente para {detalle.producto.nombre}")
 
         # Get sale data
         sale_data = sale.get_sale_data_dict()
 
         email_texts = [
-            "Your payment has been confirmed!",
-            "Your order is being processed.",
-            "You will receive notifications about the status of your order.",
-            "Here your order details:"
+            "¡Tu pago ha sido confirmado!",
+            "Tu orden está siendo procesada.",
+            "Te mantendremos al tanto del status de tu orden",
+            "Aquí están los detalles de tu orden:"
         ]
 
         logo_url = "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png"
@@ -450,5 +469,5 @@ class SaleDoneView(View):
             image_src=logo_url
         )
 
-        landing_done_page += f"?sale-id={sale_id}&sale-status=success"
-        return redirect(landing_done_page)
+        return redirect(f"{landing_done_page}/thankyou?sale=success")
+        
