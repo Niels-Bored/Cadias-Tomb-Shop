@@ -142,6 +142,15 @@
           </div>
 		  <script src="{% static 'shop/js/cart.js' %}"></script>
       <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+          const btn = document.getElementById("btn");
+
+          if (carrito.length === 0) {
+            btn.disabled = true;
+            btn.classList.add("disabled"); // opcional: para que se vea desactivado
+          }
+        });
         document.getElementById("btn").addEventListener("click", async function () {
           // Mostrar el loader
             document.getElementById("loader").style.visibility = "visible";
