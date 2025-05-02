@@ -445,7 +445,7 @@ class SaleDoneView(View):
 
         # Confirmation email after payment
         send_email(
-            subject="Tu orden ha sido procesada con éxto",
+            subject="Tu orden ha sido procesada con éxito",
             first_name=sale.usuario.first_name,
             last_name=sale.usuario.last_name,
             texts=email_texts,
