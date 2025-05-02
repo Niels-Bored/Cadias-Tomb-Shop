@@ -21,6 +21,8 @@ TEST_HEADLESS = os.getenv('TEST_HEADLESS') == 'True'
 STORAGE_AWS = os.environ.get("STORAGE_AWS") == "True"
 USE_SQLITE = os.environ.get("USE_SQLITE") == "True"
 
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -324,3 +326,8 @@ JAZZMIN_SETTINGS = {
         "auth.group": "vertical_tabs"
     },
 }
+
+# Cors
+CORS_ALLOWED_ORIGINS = os.getenv('ALLOWED_ORIGINS').split(',')
+
+CSRF_TRUSTED_ORIGINS = os.getenv('ALLOWED_ORIGINS').split(',')
