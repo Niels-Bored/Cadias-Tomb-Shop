@@ -41,6 +41,7 @@ class Producto(models.Model):
         """
         if self.stock >= amount:
             self.stock -= amount
+            self.save()
             return True
         else:
             return False

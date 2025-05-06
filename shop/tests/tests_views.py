@@ -151,173 +151,6 @@ class LogOutViewTestCase(TestCase):
         pass
 
 
-class CartViewTestCase(TestSeleniumBase):
-    """Class to test user cart actions"""
-
-    def setUp(self):
-        super().setUp("/cart/")
-
-        # Create data
-        self.product = models.Producto.objects.create(
-            nombre="Stompa",
-            imagen="https://www.warhammer.com/app/resources/catalog/product/920x950/99120103021_StompaNEW01.jpg?fm=webp&w=920&h=948",
-            precio=3000,
-            marca="Games Workshop",
-            stock=2,
-        )
-
-        # Test variables
-        self.selectors = {
-            "add-btn": "a.product-item span"
-        }
-
-    def tearDown(self):
-        """Close selenium"""
-        try:
-            self.driver.quit()
-        except Exception:
-            pass
-
-    """ def test_try_buy_without_login(self):
-        input("hola") """
-    
-    def add_product(self):
-        """
-        Add product to cart
-        """
-        selectors = {
-            "alert_title": "#swal2-title"
-        }
-
-        # load product page
-        self.set_page("/shop/1")
-        
-        # Click to add product with js
-        self.click_js(selector=self.selectors["add-btn"])
-        sleep(3)
-        
-        # Validate alert text
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("Producto añadido", elems["alert_title"].text)
-
-    def test_add_product_logged(self):
-        """
-        Try to add a product on cart logged.
-        Expected: update localstorage
-        """
-
-        selectors = {
-            "cart-product": "td.product-name"
-        }
-
-        # add product to cart
-        self.add_product()
-
-        # load cart page
-        self.set_page("/cart/")
-
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("Stompa", elems["cart-product"].text)
-
-    
-    def test_remove_product(self):
-        """
-        Try to add a product on cart logged.
-        Expected: update localstorage
-        """
-
-        selectors = {
-            "cart-product": "td.product-name",
-            "btn-delete": "button.delete"
-        }
-
-        # add product to cart
-        self.add_product()
-
-        # load cart page
-        self.set_page("/cart/")
-
-        # validate product was added
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("Stompa", elems["cart-product"].text)
-        
-        # delete product
-        self.click_js(selector=selectors["btn-delete"])
-        sleep(3)
-        elems = self.get_selenium_elems(selectors)
-        if elems["cart-product"]:
-            self.assertNotIn("Stompa", elems["cart-product"].text)
-        else:
-            self.assertNotIn("Stompa", "")
-    
-    def test_stock_not_exceeded(self):
-        """
-        Try to add products when stock is not exceeded
-        """
-
-        selectors = {
-            "product-qty": "input.quantity-amount",
-            "btn-add": "button.increase"
-        }
-
-        # add product to cart
-        self.add_product()
-
-        # load cart page
-        self.set_page("/cart/")
-
-        # validate product was added
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("1", elems["product-qty"].get_attribute('value'))
-        
-        # add product
-        self.click_js(selector=selectors["btn-add"])
-        sleep(3)
-
-        # validate product quantity was increased
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("2", elems["product-qty"].get_attribute('value'))
-        
-
-    def test_stock_exceeded(self):
-        """
-        Try to add products when stock is not exceeded
-        """
-
-        selectors = {
-            "product-qty": "input.quantity-amount",
-            "btn-add": "button.increase"
-        }
-
-        # set stock
-        self.product.reduce_stock(2)
-
-        # add product to cart
-        self.add_product()
-
-        # load cart page
-        self.set_page("/cart/")
-
-        # validate product was added
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("1", elems["product-qty"].get_attribute('value'))
-        
-        # add product
-        self.click_js(selector=selectors["btn-add"])
-        sleep(3)
-
-        # validate product was added
-        elems = self.get_selenium_elems(selectors)
-        self.assertIn("2", elems["product-qty"].get_attribute('value'))
-        
-        # add product
-        self.click_js(selector=selectors["btn-add"])
-        sleep(3)
-
-        # validate product quantity was increased
-        elems = self.get_selenium_elems(selectors)
-        self.assertNotIn("3", elems["product-qty"].get_attribute('value'))
-
 class ShopViewTestCase(TestCase):
     """Class to test user actions on shop"""
 
@@ -349,3 +182,298 @@ class BlogViewTestCase(TestCase):
 
     def setUp(self):
         pass
+
+class CartViewTestCase(TestSeleniumBase):
+    """Class to test user cart actions"""
+
+    def setUp(self):
+        super().setUp("/cart/")
+
+        # Create data
+        self.product = models.Producto.objects.create(
+            nombre="Stompa",
+            imagen="https://www.warhammer.com/app/resources/catalog/product/920x950/99120103021_StompaNEW01.jpg?fm=webp&w=920&h=948",
+            precio=3000,
+            marca="Games Workshop",
+            stock=5,
+        )
+
+        # Test variables
+        self.selectors = {
+            "add_btn": "a.product-item span"
+        }
+
+    def tearDown(self):
+        """Close selenium"""
+        try:
+            self.driver.quit()
+        except Exception:
+            pass
+    
+    def add_product(self):
+        """
+        Add product to cart
+        """
+        selectors = {
+            "alert_title": "#swal2-title"
+        }
+
+        # load product page
+        self.set_page("/shop/1")
+        
+        # Click to add product with js
+        self.click_js(selector=self.selectors["add_btn"])
+        sleep(3)
+        
+        # Validate alert text
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("Producto añadido", elems["alert_title"].text)
+
+    def test_add_product_logged(self):
+        """
+        Try to add a product on cart logged.
+        Expected: update localstorage
+        """
+
+        selectors = {
+            "cart_product": "td.product-name"
+        }
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("Stompa", elems["cart_product"].text)
+
+    
+    def test_remove_product(self):
+        """
+        Try to add a product on cart logged.
+        Expected: update localstorage
+        """
+
+        selectors = {
+            "cart_product": "td.product-name",
+            "btn_delete": "button.delete"
+        }
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # validate product was added
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("Stompa", elems["cart_product"].text)
+        
+        # delete product
+        self.click_js(selector=selectors["btn_delete"])
+        sleep(3)
+        elems = self.get_selenium_elems(selectors)
+        if elems["cart_product"]:
+            self.assertNotIn("Stompa", elems["cart_product"].text)
+        else:
+            self.assertNotIn("Stompa", "")
+    
+    def test_stock_not_exceeded(self):
+        """
+        Try to add products when stock is not exceeded
+        """
+
+        selectors = {
+            "product_qty": "input.quantity-amount",
+            "btn_add": "button.increase"
+        }
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # validate product was added
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("1", elems["product_qty"].get_attribute('value'))
+        
+        # add product
+        self.click_js(selector=selectors["btn_add"])
+        sleep(3)
+
+        # validate product quantity was increased
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("2", elems["product_qty"].get_attribute('value'))
+        
+
+    def test_stock_exceeded(self):
+        """
+        Try to add products when stock is not exceeded
+        """
+
+        selectors = {
+            "product_qty": "input.quantity-amount",
+            "btn_add": "button.increase"
+        }
+
+        # set stock
+        self.product.reduce_stock(3)
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # validate product was added
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("1", elems["product_qty"].get_attribute('value'))
+        
+        # add product
+        self.click_js(selector=selectors["btn_add"])
+        sleep(3)
+
+        # validate product was added
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("2", elems["product_qty"].get_attribute('value'))
+        
+        # add product
+        self.click_js(selector=selectors["btn_add"])
+        sleep(3)
+
+        # validate product quantity was increased
+        elems = self.get_selenium_elems(selectors)
+        self.assertNotIn("3", elems["product_qty"].get_attribute('value'))
+
+class SaleViewTestCase(TestSeleniumBase):
+    """Class to test user sale actions"""
+
+    def setUp(self):
+        super().setUp("/cart/")
+
+        # Create data
+        self.product = models.Producto.objects.create(
+            nombre="Stompa",
+            imagen="https://www.warhammer.com/app/resources/catalog/product/920x950/99120103021_StompaNEW01.jpg?fm=webp&w=920&h=948",
+            precio=3000,
+            marca="Games Workshop",
+            stock=5,
+        )
+
+        # Test variables
+        self.selectors = {
+            "add_btn": "a.product-item span",
+            "btn_buy": ".btn-buy"
+        }
+
+    def tearDown(self):
+        """Close selenium"""
+        try:
+            self.driver.quit()
+        except Exception:
+            pass
+
+    
+    def add_product(self):
+        """
+        Add product to cart
+        """
+        selectors = {
+            "alert_title": "#swal2-title"
+        }
+
+        # load product page
+        self.set_page("/shop/1")
+        
+        # Click to add product with js
+        self.click_js(selector=self.selectors["add_btn"])
+        sleep(3)
+        
+        # Validate alert text
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("Producto añadido", elems["alert_title"].text)
+
+    def test_buy_product_logged(self):
+        """
+        Try to buy a product on cart logged.
+        Expected: redirect to stripe
+        """
+
+        selectors = {}
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # click on buy button
+        self.click_js(selector=self.selectors["btn_buy"])
+        sleep(3)
+
+        # Validate redirect to stripe
+        self.assertIn("stripe", self.driver.current_url)
+
+    def test_buy_product_without_login(self):
+        """
+        Try to buy a product on cart without login.
+        Expected: redirect to login
+        """
+
+        selectors = {
+            "btn_logout":"a.logout-svg"
+        }
+
+        # add product to cart
+        self.add_product()
+
+        self.click_js(selector=selectors["btn_logout"])
+        sleep(1)
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # click on buy button
+        self.click_js(selector=self.selectors["btn_buy"])
+        sleep(3)
+
+        # validate redirect to login
+        self.assertIn("login", self.driver.current_url)
+
+    def test_buy_product_stock_exceeded(self):
+        """
+        Try to buy a product on cart when the stock is reduce .
+        Expected: redirect to stripe
+        """
+
+        selectors = {
+            "alert_title": "#swal2-title",
+            "cart_product": "td.product-name"
+        }
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # set stock
+        self.product.reduce_stock(5)
+
+        # click on buy button
+        self.click_js(selector=self.selectors["btn_buy"])
+        sleep(3)
+
+        # validate alert text
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("Stock insuficiente", elems["alert_title"].text)
+
+        # validate product removed
+        self.set_page("/cart/")
+        elems = self.get_selenium_elems(selectors)
+        if elems["cart_product"]:
+            self.assertNotIn("Stompa", elems["cart_product"].text)
+        else:
+            self.assertNotIn("Stompa", "")
