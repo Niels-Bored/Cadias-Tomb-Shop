@@ -219,11 +219,38 @@ class CartViewTestCase(TestSeleniumBase):
         elems = self.get_selenium_elems(selectors)
         self.assertIn("Stompa", elems["cart-product"].text)
 
-    """
+    
     def test_remove_product(self):
-        pass
+        """
+        Try to add a product on cart logged.
+        Expected: update localstorage
+        """
 
-    def test_stock_not_exceeded(self):
+        selectors = {
+            "cart-product": "td.product-name",
+            "btn-delete": "button.delete"
+        }
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # validate product was added
+        elems = self.get_selenium_elems(selectors)
+        self.assertIn("Stompa", elems["cart-product"].text)
+        
+        # delete product
+        self.driver.execute_script(f"""document.querySelector("{selectors['btn-delete']}").click()""")
+        sleep(3)
+        elems = self.get_selenium_elems(selectors)
+        if elems["cart-product"]:
+            self.assertNotIn("Stompa", elems["cart-product"].text)
+        else:
+            self.assertNotIn("Stompa", "")
+    
+    """ def test_stock_not_exceeded(self):
         pass
 
     def test_stock_exceeded(self):
@@ -231,7 +258,6 @@ class CartViewTestCase(TestSeleniumBase):
 
     def test_zero_amount_in_stock(self):
         pass """
-
 
 class ShopViewTestCase(TestCase):
     """Class to test user actions on shop"""
