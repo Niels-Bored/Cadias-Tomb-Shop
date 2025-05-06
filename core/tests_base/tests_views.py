@@ -124,7 +124,15 @@ class TestSeleniumBase(LiveServerTestCase):
         for key, value in selectors.items():
             fields[key] = self.get_selenium_elem(value)
         return fields
+    
+    def click_js(self, selector:str):
+        """Click on element with javascript
 
+        Args:
+            selector (str): css selector to find: name, value
+        """
+        self.driver.execute_script(f"""document.querySelector("{selector}").click()""")
+    
 class TestViewBase(LiveServerTestCase):
     """Base class to test users (login and setup)"""
 
