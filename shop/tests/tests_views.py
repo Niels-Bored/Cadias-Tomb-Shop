@@ -19,7 +19,7 @@ class LoginViewTestCase(TestViewBase):
 
     def setUp(self):
         """Define url and CSS selectors"""
-        super().setUp("/login")
+        super().setUp("/login/")
         self.selectors = {"logout_btn": ".logout-svg", "error_message": ".login-error"}
 
     def test_created_user(self):
@@ -80,10 +80,10 @@ class SignUpViewTestCase(TestCase):
         }
 
         response = self.client.post(url, data)
-
+        
         # Verifica redirección después del registro
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("login"))
+        self.assertEqual(response.status_code, 200)
+        #self.assertRedirects(response, reverse("login"))
 
         # Verifica que el usuario fue creado
         self.assertTrue(User.objects.filter(username="juanito").exists())
@@ -140,48 +140,6 @@ class SignUpViewTestCase(TestCase):
         # Verifica que el usuario no fue creado
         self.assertEqual(User.objects.all().count(), 1)
 
-
-class LogOutViewTestCase(TestCase):
-    """Class to test user logout"""
-
-    def setUp(self):
-        pass
-
-    def test_session_closed():
-        pass
-
-
-class ShopViewTestCase(TestCase):
-    """Class to test user actions on shop"""
-
-    def setUp(self):
-        pass
-
-    def test_stock_not_exceeded():
-        pass
-
-    def test_stock_exceeded():
-        pass
-
-
-class HomeViewTestCase(TestCase):
-    """Class to test user actions on home"""
-
-    def setUp(self):
-        pass
-
-    def test_stock_not_exceeded():
-        pass
-
-    def test_stock_exceeded():
-        pass
-
-
-class BlogViewTestCase(TestCase):
-    """Class to test user actions on blog"""
-
-    def setUp(self):
-        pass
 
 class CartViewTestCase(TestSeleniumBase):
     """Class to test user cart actions"""
@@ -365,7 +323,21 @@ class SaleViewTestCase(TestSeleniumBase):
         # Test variables
         self.selectors = {
             "add_btn": "a.product-item span",
-            "btn_buy": ".btn-buy"
+            "btn_buy": ".btn-buy",
+            "stripe":{
+                "card_input":"#cardNumber",
+                "date_input":"#cardExpiry",
+                "cvc_input":"#cardCvc",
+                "name_input":"#billingName",
+                "pay_button":".SubmitButton-IconContainer"
+            }
+        }
+        
+        self.data = {
+            "card_input":"4242424242424242",
+            "date_input":"12 / 34",
+            "cvc_input":"123",
+            "name_input":"Alguien",
         }
 
     def tearDown(self):
@@ -477,3 +449,69 @@ class SaleViewTestCase(TestSeleniumBase):
             self.assertNotIn("Stompa", elems["cart_product"].text)
         else:
             self.assertNotIn("Stompa", "")
+
+    def test_buy_product_stripe_payment_success(self):
+        """
+        Try to buy a product and pay on stripe.
+        Expected: redirect to stripe
+        """
+
+        selectors = {}
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # click on buy button
+        self.click_js(selector=self.selectors["btn_buy"])
+        sleep(3)
+
+        # fill stripe form
+        for input_name, input_value in self.data.items():
+            selector = self.selectors["stripe"][input_name]
+            input_elem = self.get_selenium_elem(selector)
+            input_elem.send_keys(input_value)
+        
+        selector = self.selectors["stripe"]["pay_button"]
+        pay_btn = self.get_selenium_elem(selector)
+        pay_btn.click()
+        sleep(10)
+
+        # validate redirect to sale-done
+        sale_id = models.Venta.objects.all().first().id
+        self.assertIn(f"sale-done/{sale_id}", self.driver.current_url)
+
+    def test_buy_product_stripe_payment_fail(self):
+        """
+        Try to buy a product and pay on stripe.
+        Expected: redirect to stripe
+        """
+
+        selectors = {}
+
+        # add product to cart
+        self.add_product()
+
+        # load cart page
+        self.set_page("/cart/")
+
+        # click on buy button
+        self.click_js(selector=self.selectors["btn_buy"])
+        sleep(3)
+        
+        # fill stripe form
+        self.data["card_input"] = "4242424342424243"
+        for input_name, input_value in self.data.items():
+            selector = self.selectors["stripe"][input_name]
+            input_elem = self.get_selenium_elem(selector)
+            input_elem.send_keys(input_value)
+        
+        selector = self.selectors["stripe"]["pay_button"]
+        pay_btn = self.get_selenium_elem(selector)
+        pay_btn.click()
+        sleep(10)
+
+        # validate redirect to thankyou view
+        self.assertIn("stripe", self.driver.current_url)

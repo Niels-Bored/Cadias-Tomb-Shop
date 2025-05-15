@@ -82,14 +82,17 @@ WSGI_APPLICATION = "cadiashop.wsgi.application"
 IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 if IS_TESTING or USE_SQLITE:
+    # use sqlite as db
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+    # use stripe test credentials
+    STRIPE_API_USER = os.getenv('STRIPE_API_USER_TEST')
 else:
-
+    # use real db
     options = {}
     if os.environ.get("DB_ENGINE") == "django.db.backends.mysql":
         options = {
@@ -108,6 +111,9 @@ else:
             'OPTIONS': options,
         }
     }
+
+    # use stripe credentials
+    STRIPE_API_USER = os.getenv('STRIPE_API_USER')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -165,7 +171,6 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 HOST = os.getenv('HOST')
 
 #Stripe settings
-STRIPE_API_USER = os.getenv('STRIPE_API_USER')
 STRIPE_API_HOST = os.getenv('STRIPE_API_HOST')
 
 # Storage settings

@@ -7,7 +7,7 @@ class ProductoTestCase(TestCase):
         """
         self.producto = models.Producto.objects.create(
             nombre="Stompa", 
-            url_imagen="sample.com",
+            imagen="sample.com",
             precio=3000,
             marca="Games Workshop",
             stock=2

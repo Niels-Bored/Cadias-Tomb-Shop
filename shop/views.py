@@ -128,8 +128,8 @@ class SignUpView(View):
             to_email=email,
         )
 
-        return render(request, 'shop/signup.html', context={
-            "title": "Sign Up",
+        return render(request, 'shop/login.html', context={
+            "title": "Login",
             "message_title": message_title,
             "message_text": message_text,
             "message_type": message_type,
@@ -315,8 +315,8 @@ class Sale(View):
                 "data":{}
             })
 
-        print(datos_direccion)
-        print(datos_direccion["address"])
+        """ print(datos_direccion)
+        print(datos_direccion["address"]) """
         productos_insuficientes = []
 
         description = ""
