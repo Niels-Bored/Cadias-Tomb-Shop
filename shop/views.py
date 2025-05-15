@@ -128,7 +128,7 @@ class SignUpView(View):
             to_email=email,
         )
 
-        return render(request, 'shop/signup.html', context={
+        return render(request, 'shop/login.html', context={
             "title": "Sign Up",
             "message_title": message_title,
             "message_text": message_text,
