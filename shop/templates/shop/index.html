@@ -1,153 +1,112 @@
-{% extends 'shop/base.html' %} {% load static %} {% block title %}Tienda{%
-endblock %} {% block content %}
-<style>
-  .tag-list {
-    box-sizing: border-box;
-    width: auto;
-    margin-left: 10px;
-  }
-  @media (max-width: 991px) {
-    .why-image {
-      margin-top: 80px;
-    }
-  }
-</style>
-<!-- Start Hero Section -->
-<div class="hero">
-  <div class="container">
-    <div class="row justify-content-between">
-      <div class="col-lg-5">
-        <div class="intro-excerpt">
-          <h1>
-            Wargames, boardgames, modelismo y más<span class="d-block"
-              >¡Unete al hobby!</span
-            >
-          </h1>
-          <!-- <h1>Modern Interior <span class="d-block">Design Studio</span></h1> -->
-          <p class="mb-4">
-            ¡Ciudadanos del Imperio, El Emperador pone a su disposición esta
-            fortaleza dotada con todo lo que necesitas para tu Hobby! Lleva tus
-            wargames al siguiente nivel. +++ CADIA STANDS+++
-          </p>
-          <p>
-            <a href="{% url 'shop' 1 %}" class="btn btn-secondary me-2"
-              >Equípate</a
-            ><a href="#seccion-destino" class="btn btn-white-outline"
-              >Explora</a
-            >
-          </p>
-        </div>
-      </div>
-      <div class="col-lg-7">
-        <div class="hero-img-wrap">
-          <img
-            class="logo"
-            src="https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png"
-            class="img-fluid"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Hero Section -->
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block title %}Tienda{% endblock %}
 
-<!-- Start Product Section -->
-<div id="seccion-destino" class="product-section">
-  <div class="container">
-    <div class="row">
-      <!-- Start Column 1 -->
-      <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-        <h2 class="mb-4 section-title">Revisa nuestro catalogo de productos</h2>
-        <p class="mb-4">
-          Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit.
-          Aliquam vulputate velit imperdiet dolor tempor tristique.
-        </p>
-        <p><a href="{% url 'shop' 1 %}" class="btn">Explora</a></p>
-      </div>
-      <!-- End Column 1 -->
-      {% for producto in productos %}
-      <!-- Start Column 2 -->
-      <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-        <a class="product-item">
-          <img
-            src="{{ producto.imagen.url }}"
-            class="img-fluid product-thumbnail"
-          />
-          <h3 class="product-title">{{ producto.nombre }}</h3>
-          <strong class="product-price">${{ producto.precio }}</strong>
-          {% if producto.stock > 1 %}
-          <p>{{ producto.stock }} disponibles</p>
-          {% else %}
-          <p style="color: red">Sólo uno disponible</p>
-          {% endif %}
-          <span
-            onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.imagen.url }}', '{{ producto.precio }}', '{{ producto.marca }}', '{{ producto.stock }}')"
-            class="icon-cross"
-          >
-            <img src="{% static 'shop/images/cross.svg' %}" class="img-fluid" />
-          </span>
-        </a>
-      </div>
-      <!-- End Column 2 -->
-      {% empty %}
-      <p>No hay productos disponibles.</p>
-      {% endfor %}
-    </div>
-  </div>
-</div>
-<!-- End Product Section -->
+{% block content %}
+	<style>
+		.tag-list{
+			box-sizing: border-box;
+			width: auto;
+			margin-left: 10px;
+		}
+		@media (max-width: 991px) {
+			.why-image{
+				margin-top: 80px;
+			}
+		}
+		
+	</style>
+	<!-- Start Hero Section -->
+		<div class="hero">
+			<div class="container">
+				<div class="row justify-content-between">
+					<div class="col-lg-5">
+						<div class="intro-excerpt">
+							<h1>Wargames, boardgames, modelismo y más<span class="d-block">¡Unete al hobby!</span></h1>
+							<!-- <h1>Modern Interior <span class="d-block">Design Studio</span></h1> -->
+							<p class="mb-4">¡Ciudadanos del Imperio, El Emperador pone a su disposición esta fortaleza dotada con todo lo que necesitas para tu Hobby! Lleva tus wargames al siguiente nivel. +++ CADIA STANDS+++</p>
+							<p><a href="{% url 'shop' 1 %}" class="btn btn-secondary me-2">Equípate</a><a href="#seccion-destino" class="btn btn-white-outline">Explora</a></p>
+						</div>
+					</div>
+					<div class="col-lg-7">
+						<div class="hero-img-wrap">
+							<img class="logo" src="https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png" class="img-fluid">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<!-- End Hero Section -->
 
-<!-- Start Why Choose Us Section -->
-<div class="why-choose-section">
-  <div class="container">
-    <div class="row justify-content-between">
-      <div class="col-lg-6">
-        <h2 class="section-title">¿Por qué Cadia’s Tomb?</h2>
-        <p>
-          Visítanos y contempla por ti mismo por qué nuestra comunidad sigue
-          creciendo. Somos distribuidores oficiales de la marca Gamesworkshop,
-          así como de otros wargames, materiales para modelismo y accesorios.
-          Ven a aprender el Hobby, Pinta, combate y crea tus ejércitos en
-          miniatura!
-        </p>
+	<!-- Start Product Section -->
+	<div id="seccion-destino" class="product-section">
+		<div class="container">
+			<div class="row">
 
-        <div class="row my-5">
-          <div class="col-6 col-md-6">
-            <div class="feature">
-              <div class="icon">
-                <img
-                  src="{% static 'shop/images/truck.svg' %}"
-                  alt="Image"
-                  class="imf-fluid"
-                />
-              </div>
-              <h3>Envíos a todo El Imperio</h3>
-              <p>
-                Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet
-                velit. Aliquam vulputate.
-              </p>
-            </div>
-          </div>
+				<!-- Start Column 1 -->
+				<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
+					<h2 class="mb-4 section-title">Revisa nuestro catalogo de productos</h2>
+					<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
+					<p><a href="{% url 'shop' 1 %}" class="btn">Explora</a></p>
+				</div> 
+				<!-- End Column 1 -->
+				{% for producto in productos %}
+				<!-- Start Column 2 -->
+				<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+					<a class="product-item">
+						<img src="{{ producto.imagen.url }}" class="img-fluid product-thumbnail">
+						<h3 class="product-title">{{ producto.nombre }}</h3>
+						<strong class="product-price">${{ producto.precio }}</strong>
+						{% if producto.stock > 1 %}
+							<p>{{ producto.stock }} disponibles</p>
+						{% else %}
+							<p style="color: red;">Sólo uno disponible</p>
+						{% endif %}
+						<span onclick="agregarAlCarrito('{{ producto.id }}','{{ producto.nombre }}', '{{ producto.imagen.url }}', '{{ producto.precio }}', '{{ producto.marca }}', '{{ producto.stock }}')" class="icon-cross">
+							<img src="{% static 'shop/images/cross.svg' %}" class="img-fluid">
+						</span>
+					</a>
+				</div> 
+				<!-- End Column 2 -->
+				{% empty %}
+					<p>No hay productos disponibles.</p>
+				{% endfor %}
+				
+			</div>
+		</div>
+	</div>
+	<!-- End Product Section -->
 
-          <div class="col-6 col-md-6">
-            <div class="feature">
-              <div class="icon">
-                <img
-                  src="{% static 'shop/images/bag.svg' %}"
-                  alt="Image"
-                  class="imf-fluid"
-                />
-              </div>
-              <h3>Descuentos especiales, promociones y eventos en tienda.</h3>
-              <p>
-                Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet
-                velit. Aliquam vulputate.
-              </p>
-            </div>
-          </div>
+	<!-- Start Why Choose Us Section -->
+	<div class="why-choose-section">
+		<div class="container">
+			<div class="row justify-content-between">
+				<div class="col-lg-6">
+					<h2 class="section-title">¿Por qué Cadia’s Tomb?</h2>
+					<p>Visítanos y contempla por ti mismo por qué nuestra comunidad sigue creciendo. Somos distribuidores oficiales de la marca Gamesworkshop, así como de otros wargames, materiales para modelismo y accesorios. Ven a aprender el Hobby, Pinta, combate y crea tus ejércitos en miniatura!</p>
 
-          <!-- <div class="col-6 col-md-6">
+					<div class="row my-5">
+						<div class="col-6 col-md-6">
+							<div class="feature">
+								<div class="icon">
+									<img src="{% static 'shop/images/truck.svg' %}" alt="Image" class="imf-fluid">
+								</div>
+								<h3>Envíos a todo El Imperio</h3>
+								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+							</div>
+						</div>
+
+						<div class="col-6 col-md-6">
+							<div class="feature">
+								<div class="icon">
+									<img src="{% static 'shop/images/bag.svg' %}" alt="Image" class="imf-fluid">
+								</div>
+								<h3>Descuentos especiales, promociones y eventos en tienda.</h3>
+								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+							</div>
+						</div>
+
+						<!-- <div class="col-6 col-md-6">
 							<div class="feature">
 								<div class="icon">
 									<img src="{% static 'shop/images/support.svg' %}" alt="Image" class="imf-fluid">
@@ -166,117 +125,87 @@ endblock %} {% block content %}
 								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
 							</div>
 						</div> -->
-        </div>
-      </div>
 
-      <div class="col-lg-5 why-image">
-        <div class="img-wrap">
-          <img
-            src="https://therewillbe.games/media/reviews/photos/original/e7/69/b8/the-boardgamer-s-guide-to-painting-miniatures-68-1526658547.jpeg"
-            alt="Image"
-            class="img-fluid"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Why Choose Us Section -->
+					</div>
+				</div>
 
-<!-- Start We Help Section -->
-<div class="we-help-section">
-  <div class="container">
-    <div class="row justify-content-between">
-      <div class="col-lg-7 mb-5 mb-lg-0">
-        <div class="imgs-grid">
-          <div class="grid grid-1">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/8/81/Wh40k_painting_miniature.jpg"
-              alt="Untree.co"
-            />
-          </div>
-          <div class="grid grid-2">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDPLHYnwUGlT25-aPncdIc0ThtLn1n_-Uu4noQAhU1o99cYfMloBDGpsKVywg54HmsCKk&usqp=CAU"
-              alt="Untree.co"
-            />
-          </div>
-          <div class="grid grid-3">
-            <img
-              src="https://platform.polygon.com/wp-content/uploads/sites/2/2025/01/B88A1262.jpg?quality=90&strip=all&crop=0%2C0%2C100%2C100&w=2400"
-              alt="Untree.co"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-5 ps-lg-5">
-        <h2 class="section-title mb-4">
-          Nosotros te enseñamos lo que necesitas para entrar al hobby
-        </h2>
-        <p>
-          Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis
-          nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
-          velit imperdiet dolor tempor tristique. Pellentesque habitant morbi
-          tristique senectus et netus et malesuada
-        </p>
+				<div class="col-lg-5 why-image">
+					<div class="img-wrap">
+						<img src="https://therewillbe.games/media/reviews/photos/original/e7/69/b8/the-boardgamer-s-guide-to-painting-miniatures-68-1526658547.jpeg" alt="Image" class="img-fluid">
+					</div>
+				</div>
 
-        <ul class="list-unstyled custom-list my-4">
-          <li>Donec vitae odio quis nisl dapibus malesuada</li>
-          <li>Donec vitae odio quis nisl dapibus malesuada</li>
-          <li>Donec vitae odio quis nisl dapibus malesuada</li>
-          <li>Donec vitae odio quis nisl dapibus malesuada</li>
-        </ul>
-        <p><a href="{% url 'about' %}" class="btn">Explora</a></p>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End We Help Section -->
+			</div>
+		</div>
+	</div>
+	<!-- End Why Choose Us Section -->
 
-<!-- Start Blog Section -->
-<div class="blog-section">
-  <div class="container">
-    <div class="row mb-5">
-      <div class="col-md-6">
-        <h2 class="section-title">Recent Blog</h2>
-      </div>
-      <div class="col-md-6 text-start text-md-end">
-        <a href="{% url 'blog' %}" class="more">Ver todos los posts</a>
-      </div>
-    </div>
+	<!-- Start We Help Section -->
+	<div class="we-help-section">
+		<div class="container">
+			<div class="row justify-content-between">
+				<div class="col-lg-7 mb-5 mb-lg-0">
+					<div class="imgs-grid">
+						<div class="grid grid-1"><img src="https://upload.wikimedia.org/wikipedia/commons/8/81/Wh40k_painting_miniature.jpg" alt="Untree.co"></div>
+						<div class="grid grid-2"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDPLHYnwUGlT25-aPncdIc0ThtLn1n_-Uu4noQAhU1o99cYfMloBDGpsKVywg54HmsCKk&usqp=CAU" alt="Untree.co"></div>
+						<div class="grid grid-3"><img src="https://platform.polygon.com/wp-content/uploads/sites/2/2025/01/B88A1262.jpg?quality=90&strip=all&crop=0%2C0%2C100%2C100&w=2400" alt="Untree.co"></div>
+					</div>
+				</div>
+				<div class="col-lg-5 ps-lg-5">
+					<h2 class="section-title mb-4">Nosotros te enseñamos lo que necesitas para entrar al hobby</h2>
+					<p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
 
-    <div class="row">
-      {% for blog in blogs %}
-      <div
-        style="cursor: pointer"
-        onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.imagen.url }}')"
-        class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0"
-      >
-        <div class="post-entry">
-          <a class="post-thumbnail"
-            ><img src="{{ blog.imagen.url }}" alt="Image" class="img-fluid"
-          /></a>
-          <div class="post-content-entry">
-            <h3><a href="#">{{ blog.titulo }}</a></h3>
-            <div class="meta">
-              <span>by <a href="#">{{ blog.autor }}</a></span>
-              <span>on <a href="#">{{ blog.fecha_publicacion }}</a></span>
-            </div>
-          </div>
-          <p class="tag-list">
-            {% for tag in blog.tags.all %}
-            <span class="badge bg-warning text-dark">{{ tag.nombre }}</span>
-            {% endfor %}
-          </p>
-        </div>
-      </div>
-      {% empty %}
-      <p>No hay blogs disponibles.</p>
-      {% endfor %}
-    </div>
-  </div>
-</div>
-<!-- End Blog Section -->
-<script src="{% static 'shop/js/index.js' %}"></script>
+					<ul class="list-unstyled custom-list my-4">
+						<li>Donec vitae odio quis nisl dapibus malesuada</li>
+						<li>Donec vitae odio quis nisl dapibus malesuada</li>
+						<li>Donec vitae odio quis nisl dapibus malesuada</li>
+						<li>Donec vitae odio quis nisl dapibus malesuada</li>
+					</ul>
+					<p><a href="{% url 'about' %}" class="btn">Explora</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End We Help Section -->
 
+	<!-- Start Blog Section -->
+	<div class="blog-section">
+		<div class="container">
+			<div class="row mb-5">
+				<div class="col-md-6">
+					<h2 class="section-title">Recent Blog</h2>
+				</div>
+				<div class="col-md-6 text-start text-md-end">
+					<a href="{% url 'blog' %}" class="more">Ver todos los posts</a>
+				</div>
+			</div>
+
+			<div class="row">
+				{% for blog in blogs %}
+				<div style="cursor:pointer;" onclick="verDetallers('{{ blog.titulo }}', '{{ blog.descripcion }}', '{{ blog.imagen.url }}')" class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0">
+					<div class="post-entry">
+						<a class="post-thumbnail"><img src="{{ blog.imagen.url }}" alt="Image" class="img-fluid"></a>
+						<div class="post-content-entry">
+							<h3><a href="#">{{ blog.titulo }}</a></h3>
+							<div class="meta">
+								<span>by <a href="#">{{ blog.autor }}</a></span> <span>on <a href="#">{{ blog.fecha_publicacion }}</a></span>
+							</div>
+						</div>
+						<p class="tag-list">
+							{% for tag in blog.tags.all %}
+								<span class="badge bg-warning text-dark">{{ tag.nombre }}</span>
+							{% endfor %}
+						</p>
+					</div>
+				</div>
+				{% empty %}
+					<p>No hay blogs disponibles.</p>
+				{% endfor %}
+				
+			</div>
+		</div>
+	</div>
+	<!-- End Blog Section -->	
+	<script src="{% static 'shop/js/index.js' %}"></script>
+	
 {% endblock %}
