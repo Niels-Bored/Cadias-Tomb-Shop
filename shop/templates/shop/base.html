@@ -39,6 +39,10 @@
         width: 100%;
       }
 
+      .logo-nav {
+        width: 100px;
+      }
+
       @media (min-width: 768px) {
         .hero {
           overflow: hidden;
@@ -77,9 +81,9 @@
       arial-label="Furni navigation bar"
     >
       <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}"
-          >Cadia's Tomb<span>.</span></a
-        >
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <img class="logo-nav" src="{% static 'shop/images/logo.png' %}" alt="Logo">
+        </a>
 
         <button
           class="navbar-toggler"
@@ -172,7 +176,9 @@
         <div class="row g-4 mb-5">
           <div class="col-lg-4">
             <div class="mb-4 footer-logo-wrap footer-text">
-              <a href="#" class="footer-logo">Cadia's Tomb<span>.</span></a>
+              <a href="#" class="footer-logo">
+                <img class="logo-nav" src="{% static 'shop/images/logo.png' %}" alt="Logo">
+              </a>
             </div>
             <p class="mb-4">
               Somos una tienda de hobby creada por jugadores, pintores y
