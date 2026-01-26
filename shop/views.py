@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 
 import json
 
+
 class HomeView(View):
     def get(self, request):
         tag_nombre = request.GET.get("tag")
@@ -38,11 +39,14 @@ class HomeView(View):
 
         productos = Producto.objects.filter(stock__gt=0).order_by("-id")[:3]
         return render(
-            request, "shop/index.html", {
-                "productos": productos, 
+            request,
+            "shop/index.html",
+            {
+                "productos": productos,
                 "blogs": blogs,
                 "tags": tags,
-                "tag_seleccionado": tag_nombre}
+                "tag_seleccionado": tag_nombre,
+            },
         )
 
 
@@ -68,14 +72,15 @@ class LoginView(View):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('login')
+        return redirect("login")
+
 
 class SignUpView(View):
     def get(self, request):
         return render(request, "shop/signup.html")
 
     def post(self, request):
-        
+
         firstname = request.POST["first_name"]
         lastname = request.POST["last_name"]
         username = request.POST["username"]
@@ -84,8 +89,10 @@ class SignUpView(View):
         password2 = request.POST["password2"]
 
         message_title = "Excelente"
-        message_text = "Tu usuario se ha creado correctamente. " \
+        message_text = (
+            "Tu usuario se ha creado correctamente. "
             "Revisa tu correo para confirmar tu cuenta."
+        )
         message_type = "success"
 
         if password1 != password2:
@@ -97,7 +104,7 @@ class SignUpView(View):
             return render(
                 request, "shop/signup.html", {"error": "El usuario ya existe"}
             )
-        
+
         if User.objects.filter(email=email).exists():
             return render(
                 request, "shop/signup.html", {"error": "El correo ya fue usado"}
@@ -109,11 +116,11 @@ class SignUpView(View):
             username=username,
             email=email,
             password=password1,
-            is_active=False
+            is_active=False,
         )
 
         id_token = tokens.get_id_token(user)
-       
+
         emails.send_email(
             subject="Activa tu cuenta",
             first_name=firstname,
@@ -128,45 +135,54 @@ class SignUpView(View):
             to_email=email,
         )
 
-        return render(request, 'shop/login.html', context={
-            "title": "Sign Up",
-            "message_title": message_title,
-            "message_text": message_text,
-            "message_type": message_type,
-        })
+        return render(
+            request,
+            "shop/login.html",
+            context={
+                "title": "Sign Up",
+                "message_title": message_title,
+                "message_text": message_text,
+                "message_type": message_type,
+            },
+        )
+
 
 class ActivationView(View):
-    @method_decorator(decorators.logged(redirect_url='/'))
+    @method_decorator(decorators.logged(redirect_url="/"))
     def get(self, request, user_id: int, token: str):
-        
+
         user = User.objects.filter(id=user_id)
-        
+
         error_context = {
             "message_title": "Error de Activación",
             "message_text": "Revisa el enlace o intenta registrarte de nuevo",
-            "message_type": "error"
+            "message_type": "error",
         }
-        error_response = render(request, 'shop/index.html', context=error_context)
-        
+        error_response = render(request, "shop/index.html", context=error_context)
+
         is_valid, user = tokens.validate_user_token(user_id, token, filter_active=False)
-        
+
         # render error message if token is invalid
         if not is_valid:
             return error_response
-        
+
         # Activate user
         user.is_active = True
         user.save()
-        
+
         # Success message
-        return render(request, 'shop/index.html', context={
-            "message_title": "Cuenta activada",
-            "message_text": "Tu cuenta ha sido activada correctamente. "
-                            "Ahora puedes iniciar sesión",
-            "message_type": "success"
-        })
-    
-    
+        return render(
+            request,
+            "shop/index.html",
+            context={
+                "message_title": "Cuenta activada",
+                "message_text": "Tu cuenta ha sido activada correctamente. "
+                "Ahora puedes iniciar sesión",
+                "message_type": "success",
+            },
+        )
+
+
 class UserView(LoginRequiredMixin, View):
     login_url = "login"  # Redirige si no está autenticado
 
@@ -196,6 +212,7 @@ class UserView(LoginRequiredMixin, View):
 
         messages.success(request, "Perfil actualizado correctamente.")
         return redirect("user")
+
 
 class CheckoutView(LoginRequiredMixin, View):
     login_url = "login"
@@ -227,13 +244,18 @@ class ContactView(TemplateView):
             cta_text="Ir al panel de administración",
             to_email=settings.ADMIN_EMAIL,
         )
-        
-        return render(request, 'shop/contact.html', context={
-            "message_title": "Correo enviado",
-            "message_text": "Tu correo ha sido enviado a los administradores. "
-                            "Te responderemos en menos de 24 horas",
-            "message_type": "success"
-        })
+
+        return render(
+            request,
+            "shop/contact.html",
+            context={
+                "message_title": "Correo enviado",
+                "message_text": "Tu correo ha sido enviado a los administradores. "
+                "Te responderemos en menos de 24 horas",
+                "message_type": "success",
+            },
+        )
+
 
 class AboutView(TemplateView):
     template_name = "shop/about.html"
@@ -241,11 +263,16 @@ class AboutView(TemplateView):
 
 class ThankYouView(TemplateView):
     def get(self, request):
-        return render(request, 'shop/thankyou.html', context={
-            "message_title": "Pedido realizado con éxito",
-            "message_text": "Te hemos enviado los detalles de tu pedido por correo",
-            "message_type": "success"
-        })
+        return render(
+            request,
+            "shop/thankyou.html",
+            context={
+                "message_title": "Pedido realizado con éxito",
+                "message_text": "Te hemos enviado los detalles de tu pedido por correo",
+                "message_type": "success",
+            },
+        )
+
 
 class BlogListView(View):
     def get(self, request):
@@ -258,21 +285,23 @@ class BlogListView(View):
         else:
             blogs = Blog.objects.all().order_by("-id")[:20]
 
-        return render(request, "shop/blog.html", {
-            "blogs": blogs,
-            "tags": tags,
-            "tag_seleccionado": tag_nombre
-        })
+        return render(
+            request,
+            "shop/blog.html",
+            {"blogs": blogs, "tags": tags, "tag_seleccionado": tag_nombre},
+        )
 
 
 class ShopView(View):
     def get(self, request, page=1):
         query = request.GET.get("q", "")
-        
+
         if query:
-            productos_queryset = Producto.objects.filter(nombre__icontains=query, stock__gt=0).order_by('-id')
+            productos_queryset = Producto.objects.filter(
+                nombre__icontains=query, stock__gt=0
+            ).order_by("-id")
         else:
-            productos_queryset = Producto.objects.filter(stock__gt=0).order_by('-id')
+            productos_queryset = Producto.objects.filter(stock__gt=0).order_by("-id")
 
         paginator = Paginator(productos_queryset, 20)
 
@@ -286,7 +315,7 @@ class ShopView(View):
             "query": query,
         }
 
-        return render(request, "shop/shop.html", context)  
+        return render(request, "shop/shop.html", context)
 
 
 class CartView(View):
@@ -302,18 +331,16 @@ class Sale(View):
     def post(self, request):
         if not request.user.is_authenticated:
             return JsonResponse({"login_required": True})
-       
+
         try:
             data = json.loads(request.body)
             username = data.get("username")
             productos = data.get("productos")
             datos_direccion = data.get("direccion")
         except:
-            return JsonResponse({
-                "status":"error",
-                "message":"Invalid JSON",
-                "data":{}
-            })
+            return JsonResponse(
+                {"status": "error", "message": "Invalid JSON", "data": {}}
+            )
 
         """ print(datos_direccion)
         print(datos_direccion["address"]) """
@@ -331,25 +358,23 @@ class Sale(View):
                 productos_insuficientes.append(item["id"])
             else:
                 description += f"{item['nombre']} x {item['cantidad']}\n"
-                total+=float(item['precio'])*item["cantidad"]
+                total += float(item["precio"]) * item["cantidad"]
                 products.append(producto)
 
         if productos_insuficientes:
-            return JsonResponse({
-                "status":"error",
-                "message":"Not enough stock",
-                "data":{
-                    "productos_insuficientes": productos_insuficientes
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Not enough stock",
+                    "data": {"productos_insuficientes": productos_insuficientes},
                 }
-            })
-        
+            )
+
         users = User.objects.filter(username=username)
         if not users:
-            return JsonResponse({
-                "status":"error",
-                "message":"Invalid username",
-                "data":{}
-            })
+            return JsonResponse(
+                {"status": "error", "message": "Invalid username", "data": {}}
+            )
 
         user = users.first()
 
@@ -359,7 +384,7 @@ class Sale(View):
             datos_direccion["phone"] = "No especificado"
 
         sale = Venta.objects.create(
-            usuario=user, 
+            usuario=user,
             direccion=datos_direccion["address"],
             tipo=datos_direccion["kind"],
             estado=datos_direccion["state"],
@@ -367,43 +392,41 @@ class Sale(View):
             correo=datos_direccion["email"],
             telefono=datos_direccion["phone"],
             total=total,
-            status="Pendiente")
-        
+            status="Pendiente",
+        )
+
         for item in productos:
             producto = Producto.objects.get(id=item["id"])
             cantidad = item["cantidad"]
 
             # Crear relación en la tabla intermedia con la cantidad
             VentaProducto.objects.create(
-                venta=sale,
-                producto=producto,
-                cantidad=cantidad
+                venta=sale, producto=producto, cantidad=cantidad
             )
-
-
 
         sale.save()
 
-        stripe_url= get_stripe_link(
+        stripe_url = get_stripe_link(
             product_name="Pedido",
             total=total,
-            description=description, 
-            email="abelsotovaldez@gmail.com", 
-            sale_id=sale.id, 
-            back_page="/cart" 
+            description=description,
+            email="abelsotovaldez@gmail.com",
+            sale_id=sale.id,
+            back_page="/cart",
         )
-        
-        return JsonResponse({
-                "status":"success",
-                "message":"Compra realizada exitosamente",
-                "data":{
-                    "stripe_url":stripe_url
-                }
-            })
-    
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Compra realizada exitosamente",
+                "data": {"stripe_url": stripe_url},
+            }
+        )
+
+
 class SaleDoneView(View):
     def get(self, request, sale_id: str):
-        """ Update sale status and redirect to landing
+        """Update sale status and redirect to landing
 
         Args:
             request (HttpRequest): Django request object
@@ -422,7 +445,7 @@ class SaleDoneView(View):
         sale.status = "Pagada"
         # Get link from stripe
         sale.save()
-        
+
         # Update stock
         for detalle in sale.detalle_venta.all():
             if detalle.producto.reduce_stock(detalle.cantidad):
@@ -438,10 +461,10 @@ class SaleDoneView(View):
             "¡Tu pago ha sido confirmado!",
             "Tu orden está siendo procesada.",
             "Te mantendremos al tanto del status de tu orden",
-            "Aquí están los detalles de tu orden:"
+            "Aquí están los detalles de tu orden:",
         ]
 
-        logo_url = "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/11/Salamanders_Aggressor.png"
+        logo_url = "https://github.com/Niels-Bored/Cadias-Tomb-Shop/blob/master/shop/static/shop/images/Cadiano.png?raw=true"
 
         # Confirmation email after payment
         send_email(
@@ -453,7 +476,7 @@ class SaleDoneView(View):
             cta_text="Seguir comprando",
             to_email=sale.usuario.email,
             key_items=sale_data,
-            image_src=logo_url
+            image_src=logo_url,
         )
 
         # Send email to admin
@@ -466,8 +489,7 @@ class SaleDoneView(View):
             cta_text="Ver compra en el dashboard",
             to_email=settings.ADMIN_EMAIL,
             key_items=sale_data,
-            image_src=logo_url
+            image_src=logo_url,
         )
 
         return redirect(f"{landing_done_page}/thankyou?sale=success")
-        
