@@ -1,7 +1,7 @@
 # general
 Django==4.2.7
 whitenoise==6.2.0
-gunicorn==20.1.0
+gunicorn==22.0.0
 django-cors-headers==4.1.0
 python-dotenv==1.1.0
 requests==2.32.3
