@@ -34,7 +34,7 @@ class Producto(models.Model):
 
         Args:
             amount (int): Amount of products to reduce from stock
-        
+
         Returns:
             bool: True if amount can be reduced without exceeding stock, False in case it can't
 
@@ -46,13 +46,13 @@ class Producto(models.Model):
         else:
             return False
 
+
 class Venta(models.Model):
-    STATUS_VALUES = [
-        ("Pendiente", "Pendiente"),
-        ("Pagada", "Pagada")
-    ]
+    STATUS_VALUES = [("Pendiente", "Pendiente"), ("Pagada", "Pagada")]
     id = models.CharField(primary_key=True, max_length=12, unique=True)
-    detalles = models.ManyToManyField("Producto", through="VentaProducto", related_name="ventas")
+    detalles = models.ManyToManyField(
+        "Producto", through="VentaProducto", related_name="ventas"
+    )
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     direccion = models.CharField(max_length=500)
     tipo = models.CharField(max_length=500)
@@ -66,7 +66,7 @@ class Venta(models.Model):
 
     def __str__(self):
         return self.id
-    
+
     def save(self, *args, **kwargs):
 
         if not self.id:
@@ -76,9 +76,8 @@ class Venta(models.Model):
                 self.id = uuid.uuid4().hex[:12]
         super(Venta, self).save(*args, **kwargs)
 
-    
     def get_sale_data_dict(self) -> dict:
-        """ Return sale summary data as dictionary
+        """Return sale summary data as dictionary
 
         Returns:
             dict: Sale summary data
@@ -87,9 +86,9 @@ class Venta(models.Model):
         sale_data = {
             "Order Number": self.id,
             "Email": self.usuario.email,
-            "Full Name": self.usuario.first_name +" " +self.usuario.last_name,
+            "Full Name": self.usuario.first_name + " " + self.usuario.last_name,
             "Address": self.direccion,
-            "Total": self.total
+            "Total": self.total,
         }
 
         return sale_data
@@ -98,10 +97,14 @@ class Venta(models.Model):
         verbose_name_plural = "Ventas"
         verbose_name = "Venta"
 
+
 class VentaProducto(models.Model):
-    venta = models.ForeignKey("Venta", on_delete=models.CASCADE, related_name="detalle_venta")
+    venta = models.ForeignKey(
+        "Venta", on_delete=models.CASCADE, related_name="detalle_venta"
+    )
     producto = models.ForeignKey("Producto", on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
+
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
@@ -109,7 +112,8 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.nombre
-    
+
+
 class Blog(models.Model):
     id = models.AutoField(primary_key=True)
     titulo = models.CharField(max_length=100)
@@ -117,7 +121,9 @@ class Blog(models.Model):
     descripcion = models.CharField(max_length=200)
     autor = models.CharField(max_length=100)
     fecha_publicacion = models.DateField(auto_now_add=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='blogs')  # Aquí se establece la relación
+    tags = models.ManyToManyField(
+        Tag, blank=True, related_name="blogs"
+    )  # Aquí se establece la relación
 
     def __str__(self):
         return self.titulo
@@ -125,3 +131,15 @@ class Blog(models.Model):
     class Meta:
         verbose_name_plural = "Blogs"
         verbose_name = "Blog"
+
+
+class CuotaEnvio(models.Model):
+    id = models.AutoField(primary_key=True)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return str(self.precio)
+
+    class Meta:
+        verbose_name_plural = "Cuotas de Envío"
+        verbose_name = "Cuota de Envío"
