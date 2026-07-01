@@ -20,7 +20,7 @@ from utils.stripe import get_stripe_link, update_transaction_link
 from utils.emails import send_email
 from utils import emails, tokens
 
-from .models import Producto, Blog, Tag, Venta, VentaProducto
+from .models import Producto, Blog, Tag, Venta, VentaProducto, CuotaEnvio
 from django.contrib.auth.models import User
 
 import json
@@ -320,10 +320,14 @@ class ShopView(View):
 
 class CartView(View):
     def get(self, request):
+        cuota_envio = CuotaEnvio.objects.first()
         return render(
             request,
             "shop/cart.html",
-            {"user_authenticated": request.user.is_authenticated},
+            {
+                "user_authenticated": request.user.is_authenticated,
+                "shipment_fee": cuota_envio.precio if cuota_envio else 0,
+            },
         )
 
 
