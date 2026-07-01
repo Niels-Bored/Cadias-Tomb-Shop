@@ -56,7 +56,7 @@
                       <label class="text-black h4" for="coupon">Dirección</label>
                       <p>Recoge tu pedido en nuestra tienda o específica tu dirección</p>
                     </div>
-                    <label for="c_ship_different_address" class="text-black" data-bs-toggle="collapse" href="#ship_different_address" role="button" aria-expanded="false" aria-controls="ship_different_address"><input type="checkbox" value="1" id="c_ship_different_address">¿Quieres que te enviemos tu paquete a domicilio?</label>
+                    <label for="c_ship_different_address" class="text-black input-container" data-bs-toggle="collapse" href="#ship_different_address" role="button" aria-expanded="false" aria-controls="ship_different_address"><input type="checkbox" value="1" id="c_ship_different_address"><p class="different_address">¿Quieres que te enviemos tu paquete a domicilio?</p></label>
                     <div class="collapse" id="ship_different_address">
                       <div class="py-2">
                         <div class="form-group row  mb-3">
@@ -114,6 +114,14 @@
                           <strong class="text-black" id="subtotal">$0.00</strong>
                         </div>
                       </div>
+                      <div class="row mb-3">
+                          <div class="col-md-6">
+                              <span class="text-black">Envío</span>
+                          </div>
+                          <div class="col-md-6 text-right">
+                              <strong class="text-black" id="shipment">$0.00</strong>
+                          </div>
+                      </div>
                       <div class="row mb-5">
                         <div class="col-md-6">
                           <span class="text-black">Total</span>
@@ -142,7 +150,35 @@
           </div>
 		  <script src="{% static 'shop/js/cart.js' %}"></script>
       <script>
+        const shipmentFee = parseFloat("{{ shipment_fee }}");
+
+        function actualizarTotales() {
+            const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+            let subtotal = carrito.reduce((sum, prod) => sum + (prod.precio * prod.cantidad), 0);
+
+            const checkbox = document.getElementById("c_ship_different_address");
+
+            let total = subtotal;
+
+            if (checkbox && checkbox.checked) {
+                total += shipmentFee;
+            }
+
+            document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById("total").textContent = `$${total.toFixed(2)}`;
+
+            document.getElementById("shipment").textContent =
+            checkbox.checked ? `$${shipmentFee.toFixed(2)}` : "$0.00";
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
+          const checkbox = document.getElementById("c_ship_different_address");
+
+          checkbox.addEventListener("change", function () {
+              actualizarTotales();
+          });
+          
           const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
           const btn = document.getElementById("btn");
 
