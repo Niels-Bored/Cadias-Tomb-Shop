@@ -341,6 +341,7 @@ class Sale(View):
             username = data.get("username")
             productos = data.get("productos")
             datos_direccion = data.get("direccion")
+            shipment_fee = data.get("shipment_fee")
         except:
             return JsonResponse(
                 {"status": "error", "message": "Invalid JSON", "data": {}}
@@ -364,6 +365,8 @@ class Sale(View):
                 description += f"{item['nombre']} x {item['cantidad']}\n"
                 total += float(item["precio"]) * item["cantidad"]
                 products.append(producto)
+
+        description += f"Cuota de envío: ${shipment_fee}\n"
 
         if productos_insuficientes:
             return JsonResponse(
