@@ -324,6 +324,7 @@ class SaleViewTestCase(TestSeleniumBase):
         self.selectors = {
             "add_btn": "a.product-item span",
             "btn_buy": ".btn-buy",
+            "btn_back": ".PhoneNumberVerification-backButton",
             "stripe":{
                 "card_input":"#cardNumber",
                 "date_input":"#cardExpiry",
@@ -385,6 +386,8 @@ class SaleViewTestCase(TestSeleniumBase):
         self.click_js(selector=self.selectors["btn_buy"])
         sleep(3)
 
+        input()
+        
         # Validate redirect to stripe
         self.assertIn("stripe", self.driver.current_url)
 
@@ -468,6 +471,9 @@ class SaleViewTestCase(TestSeleniumBase):
         self.click_js(selector=self.selectors["btn_buy"])
         sleep(3)
 
+        self.click_js(selector=self.selectors["btn_back"])
+        sleep(3)
+
         # fill stripe form
         for input_name, input_value in self.data.items():
             selector = self.selectors["stripe"][input_name]
@@ -499,6 +505,9 @@ class SaleViewTestCase(TestSeleniumBase):
 
         # click on buy button
         self.click_js(selector=self.selectors["btn_buy"])
+        sleep(5)
+
+        self.click_js(selector=self.selectors["btn_back"])
         sleep(3)
         
         # fill stripe form
