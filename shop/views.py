@@ -417,7 +417,7 @@ class Sale(View):
             product_name="Pedido",
             total=total,
             description=description,
-            email="abelsotovaldez@gmail.com",
+            email=user.email,
             sale_id=sale.id,
             back_page="/cart",
         )
