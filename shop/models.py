@@ -54,6 +54,7 @@ class Venta(models.Model):
         "Producto", through="VentaProducto", related_name="ventas"
     )
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=500)
     tipo = models.CharField(max_length=500)
     estado = models.CharField(max_length=500)
