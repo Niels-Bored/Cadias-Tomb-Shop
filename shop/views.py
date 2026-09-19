@@ -394,6 +394,7 @@ class Sale(View):
 
         sale = Venta.objects.create(
             usuario=user,
+            nombre=data.get("name", ""),
             direccion=datos_direccion["address"],
             tipo=datos_direccion["kind"],
             estado=datos_direccion["state"],
