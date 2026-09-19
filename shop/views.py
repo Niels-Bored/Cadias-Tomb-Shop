@@ -385,6 +385,8 @@ class Sale(View):
 
         user = users.first()
 
+        if datos_direccion["email"]:
+            total = total + float(shipment_fee)
         if not datos_direccion["email"]:
             datos_direccion["email"] = user.email
         if not datos_direccion["phone"]:
