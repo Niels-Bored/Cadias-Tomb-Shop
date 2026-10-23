@@ -344,3 +344,9 @@ JAZZMIN_SETTINGS = {
 CORS_ALLOWED_ORIGINS = os.getenv('ALLOWED_ORIGINS').split(',')
 
 CSRF_TRUSTED_ORIGINS = os.getenv('ALLOWED_ORIGINS').split(',')
+
+# Security hardening — values live in Coolify env vars; defaults are prod-safe.
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', str(not DEBUG)).lower() == 'true'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', str(not DEBUG)).lower() == 'true'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', str(not DEBUG)).lower() == 'true'
