@@ -186,17 +186,21 @@ if STORAGE_AWS:
     # s3 static settings
     STATIC_LOCATION = 'static'
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
-    STATICFILES_STORAGE = 'cadiashop.storage_backends.StaticStorage'
     # s3 public media settings
 
     PUBLIC_MEDIA_LOCATION = 'media'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
-    DEFAULT_FILE_STORAGE = 'cadiashop.storage_backends.PublicMediaStorage'
 
     # s3 private media settings
     PRIVATE_MEDIA_LOCATION = 'private'
     PRIVATE_FILE_STORAGE = 'cadiashop.storage_backends.PrivateMediaStorage'
-    
+
+    # Django 5.1 removed STATICFILES_STORAGE and DEFAULT_FILE_STORAGE.
+    STORAGES = {
+        'default': {'BACKEND': 'cadiashop.storage_backends.PublicMediaStorage'},
+        'staticfiles': {'BACKEND': 'cadiashop.storage_backends.StaticStorage'},
+    }
+
     # Disable Django's own staticfiles handling in favour of WhiteNoise
     # for greater consistency between gunicorn and
     STATIC_ROOT = None
