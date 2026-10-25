@@ -57,6 +57,10 @@ class TestSeleniumBase(LiveServerTestCase):
             chrome_options.add_argument("--headless=new")
             chrome_options.add_argument("--disable-gpu")
 
+        # Headless Chrome defaults to 780x580, which puts the login submit
+        # button below the fold and makes Selenium's click get intercepted.
+        chrome_options.add_argument("--window-size=1400,1000")
+
         # Allow clipboard access
         prefs = {"profile.default_content_setting_values.clipboard": 1}
         chrome_options.add_experimental_option("prefs", prefs)
@@ -66,8 +70,15 @@ class TestSeleniumBase(LiveServerTestCase):
         chrome_options.add_experimental_option("useAutomationExtension", False)
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
-        self.driver = webdriver.Chrome(options=chrome_options)
+        # Production images have no Chrome, so these E2E tests must skip there
+        # instead of failing (a red suite should mean a real regression).
+        try:
+            self.driver = webdriver.Chrome(options=chrome_options)
+        except Exception as exc:  # noqa: BLE001 - any driver/browser failure means "no browser"
+            self.skipTest(f"Selenium/Chrome not available: {exc}")
         self.driver.implicitly_wait(5)
+        # Never hang the suite on a stuck page load; fail with a clear error.
+        self.driver.set_page_load_timeout(30)
 
     def login(self):
 
@@ -159,7 +170,14 @@ class TestViewBase(LiveServerTestCase):
         chrome_options = Options()
         if settings.TEST_HEADLESS:
             chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(options=chrome_options)
+        # Same as the other helper: the default 780x580 viewport hides the
+        # submit button below the fold.
+        chrome_options.add_argument("--window-size=1400,1000")
+        try:
+            self.driver = webdriver.Chrome(options=chrome_options)
+        except Exception as exc:  # noqa: BLE001
+            self.skipTest(f"Selenium/Chrome not available: {exc}")
+        self.driver.set_page_load_timeout(30)
         self.driver.implicitly_wait(5)
 
     def login(self, user: str = None, user_pass: str = None):
